@@ -1,0 +1,27 @@
+{
+  "name": "satori-node",
+  "version": "1.0.23",
+  "description": "Satori driver for NodeJS",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/uuid": "^9.0.8",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.1.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "js-crypto-aes": "^1.0.6",
+    "node-aes": "^1.0.1",
+    "uuid": "^10.0.0"
+  }
+}
