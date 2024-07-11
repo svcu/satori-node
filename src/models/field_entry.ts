@@ -1,4 +1,4 @@
 export interface FieldEntry{
-    field: string;
+    field: string,
     value: string
 }
