@@ -32,9 +32,14 @@ interface SetPayload extends Command {
     type?: string;
 }
 
+interface Vertex {
+    relation?: string;
+    neighbor: string;
+}
+
 interface SetVertexPayload extends Command {
     key: string;
-    vertex: string[];
+    vertex: Vertex[];
 }
 
 interface DeletePayload extends Command {
@@ -134,7 +139,7 @@ declare class Satori {
     setHost(host: string): void;
     setPort(port: number): void;
     getSocket(): Promise<tls.TLSSocket>;
-    set(payload: SetPayload): Promise<boolean>;
+    set(payload: SetPayload): Promise<string | boolean>;
     get(payload: GetPayload): Promise<any | undefined>;
     put(payload: PutPayload): Promise<boolean>;
     delete(payload: DeletePayload): Promise<boolean>;
@@ -175,10 +180,10 @@ declare class Schema<T extends object> {
     body: T;
     key: string;
     constructor(body: T, satori: Satori, schemaName: string, key?: string);
-    set(): Promise<boolean>;
+    set(): Promise<string | boolean>;
     delete(): Promise<boolean>;
     encrypt(encryption_key: string): Promise<boolean>;
-    setVertex(vertex: string[], encryption_key?: string): Promise<boolean>;
+    setVertex(vertex: Vertex[], encryption_key?: string): Promise<boolean>;
     getVertex(): Promise<any | undefined>;
     deleteVertex(vertex: string, encryption_key?: string): Promise<Boolean>;
     dfs(relation?: string): Promise<any | undefined>;

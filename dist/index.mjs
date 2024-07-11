@@ -68,8 +68,7 @@ var Satori = class {
             socket.destroy();
             resolve(true);
           } else {
-            socket.destroy();
-            reject(false);
+            resolve(dataStr);
           }
         });
       });

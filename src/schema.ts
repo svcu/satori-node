@@ -18,6 +18,7 @@ import { GetAllPayload } from "./models/get_all";
 import { v4 as uuidv4 } from "uuid";
 import Satori from "./satori";
 import { FieldEntry, SetRefPayload } from "./models";
+import { Vertex } from "./models/vertex_list";
 
 export default class Schema<T extends object> {
 
@@ -37,7 +38,7 @@ export default class Schema<T extends object> {
     this.schemaName = schemaName;
   }
 
-  async set(): Promise<boolean> {
+  async set(): Promise<string | boolean> {
     return await this.satori.set({
       key: this.key,
       data: this.body,
@@ -56,7 +57,7 @@ export default class Schema<T extends object> {
     });
   }
 
-  async setVertex(vertex: string[], encryption_key?: string): Promise<boolean> {
+  async setVertex(vertex: Vertex[], encryption_key?: string): Promise<boolean> {
     return await this.satori.setVertex({
       key: this.key,
       vertex: vertex,
