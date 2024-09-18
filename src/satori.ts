@@ -63,7 +63,8 @@ export default class Satori {
 
   async getSocket(): Promise<WebSocket> {
 
-    const ws = new WebSocket("ws://"+this.host+":"+this.port);
+    const skport = this.port + 11;
+    const ws = new WebSocket("ws://"+this.host+":"+skport);
       return new Promise((resolve, reject)=>{
         ws.onopen = (e: WebSocket.Event) => {
             resolve(ws);
