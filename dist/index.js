@@ -56,7 +56,7 @@ __export(src_exports, {
 module.exports = __toCommonJS(src_exports);
 
 // src/satori.ts
-var import_tls = __toESM(require("tls"));
+var import_ws = __toESM(require("ws"));
 var Satori = class {
   constructor(host, port, username, token, network_pwd) {
     this.host = host;
@@ -77,10 +77,16 @@ var Satori = class {
   }
   getSocket() {
     return __async(this, null, function* () {
-      const client = import_tls.default.connect({ host: this.host, port: this.port, rejectUnauthorized: false });
-      client.on("error", (err) => {
+      const skport = this.port + 11;
+      const ws = new import_ws.default("ws://" + this.host + ":" + skport);
+      return new Promise((resolve, reject) => {
+        ws.onopen = (e) => {
+          resolve(ws);
+        };
+        ws.onerror = (e) => {
+          reject(e);
+        };
       });
-      return client;
     });
   }
   set(payload) {
@@ -96,12 +102,12 @@ var Satori = class {
       if (this.token) payload.token = this.token;
       payload.command = "SET";
       const socket = yield this.getSocket();
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           const dataStr = data.toString();
           if (dataStr == "OK") {
-            socket.destroy();
+            socket.close();
             resolve(true);
           } else {
             resolve(dataStr);
@@ -116,7 +122,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "GET";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           const data_json = JSON.parse(data.toString());
@@ -134,7 +140,7 @@ var Satori = class {
       if (this.token) payload.token = this.token;
       payload.command = "PUT";
       const socket = yield this.getSocket();
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -152,7 +158,7 @@ var Satori = class {
       if (this.token) payload.token = this.token;
       payload.command = "DELETE";
       const socket = yield this.getSocket();
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -170,7 +176,7 @@ var Satori = class {
       if (this.token) payload.token = this.token;
       payload.command = "ENCRYPT";
       const socket = yield this.getSocket();
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -188,7 +194,7 @@ var Satori = class {
       if (this.token) payload.token = this.token;
       payload.command = "SET_VERTEX";
       const socket = yield this.getSocket();
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -206,7 +212,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "GET_VERTEX";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           try {
@@ -225,7 +231,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "DELETE_VERTEX";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -243,7 +249,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "DFS";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           try {
@@ -261,7 +267,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "GET_ALL_WITH";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           try {
@@ -280,7 +286,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "GET_ONE_WITH";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           try {
@@ -299,7 +305,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "PUT_ALL_WITH";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -317,7 +323,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "PUT_ONE_WITH";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -335,7 +341,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "DELETE_ONE_WITH";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -353,7 +359,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "SET_REF";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -371,7 +377,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "DELETE_REFS";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -389,7 +395,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "GET_REFS";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           try {
@@ -408,7 +414,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "SET_USER";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -426,7 +432,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "GET_USER";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           try {
@@ -445,7 +451,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "PUT_USER";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -463,7 +469,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "DELETE_USER";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -481,7 +487,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "DELETE_AUTH";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -499,7 +505,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "INJECT";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           try {
@@ -518,7 +524,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "GET_ALL";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           try {
@@ -537,7 +543,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "DELETE_ALL";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -555,7 +561,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "DELETE_ALL_WITH";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -573,7 +579,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "PUSH";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -591,7 +597,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "REMOVE";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -609,7 +615,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "POP";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -627,7 +633,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "SPLICE";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -645,7 +651,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "DECRYPT";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -663,7 +669,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "PUT_ALL";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {
@@ -681,7 +687,7 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "DELETE_REF";
-      socket.write(JSON.stringify(payload));
+      socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         socket.on("data", (data) => {
           if (data.toString() == "OK") {

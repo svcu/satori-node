@@ -1,4 +1,4 @@
-import tls from 'tls';
+import WebSocket from 'ws';
 
 interface Command {
     command?: string;
@@ -138,7 +138,7 @@ declare class Satori {
     constructor(host: string, port: number, username?: string, token?: string, network_pwd?: string);
     setHost(host: string): void;
     setPort(port: number): void;
-    getSocket(): Promise<tls.TLSSocket>;
+    getSocket(): Promise<WebSocket>;
     set(payload: SetPayload): Promise<string | boolean>;
     get(payload: GetPayload): Promise<any | undefined>;
     put(payload: PutPayload): Promise<boolean>;
