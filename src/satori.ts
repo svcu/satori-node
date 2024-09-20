@@ -71,7 +71,7 @@ export default class Satori {
       ws.onerror = (e: WebSocket.ErrorEvent) => {
         throw new Error("Error connecting");
       };
-    })
+    });
   }
 
   async set(payload: SetPayload): Promise<string | boolean> {
@@ -94,7 +94,7 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
         const dataStr: string = data.toString();
 
         if (dataStr == "OK") {
@@ -104,7 +104,7 @@ export default class Satori {
         } else {
           resolve(dataStr);
         }
-      });
+      };
     });
   }
 
@@ -113,17 +113,15 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET";
 
-    this.socket
-.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket
-.on("data", (data) => {
+
+      this.socket.onmessage = (data) => {
         const data_json = JSON.parse(data.toString());
 
         if (data_json.key == "not found") {
@@ -131,7 +129,8 @@ export default class Satori {
         }
 
         resolve(data_json);
-      });
+      };
+      
     });
   }
 
@@ -147,13 +146,17 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
+      
     });
   }
 
@@ -169,13 +172,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -191,13 +196,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -213,13 +220,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -228,7 +237,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET_VERTEX";
@@ -236,7 +244,8 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+
+      this.socket.onmessage = (data) =>{
         try {
           const data_json = JSON.parse(data.toString());
 
@@ -244,7 +253,9 @@ export default class Satori {
         } catch {
           resolve(undefined);
         }
-      });
+      }
+
+      
     });
   }
 
@@ -253,7 +264,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_VERTEX";
@@ -261,13 +271,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -276,7 +288,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DFS";
@@ -284,13 +295,13 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
-        try {
-          resolve(JSON.parse(data.toString()));
-        } catch {
-          resolve(undefined);
+        this.socket.onmessage = (data) => {
+          try {
+            resolve(JSON.parse(data.toString()));
+          } catch {
+            resolve(undefined);
+          }
         }
-      });
     });
   }
 
@@ -299,7 +310,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET_ALL_WITH";
@@ -307,7 +317,8 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+
+      this.socket.onmessage = (data)=>{
         try {
           const data_json = JSON.parse(data.toString());
 
@@ -315,7 +326,8 @@ export default class Satori {
         } catch {
           resolve(undefined);
         }
-      });
+      }
+
     });
   }
 
@@ -324,7 +336,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET_ONE_WITH";
@@ -332,15 +343,13 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
-        try {
+      this.socket.onmessage = (data) => {try {
           const data_json = JSON.parse(data.toString());
 
           resolve(data_json);
         } catch {
           resolve(undefined);
-        }
-      });
+        }}
     });
   }
 
@@ -349,7 +358,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "PUT_ALL_WITH";
@@ -357,13 +365,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -372,7 +382,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "PUT_ONE_WITH";
@@ -380,13 +389,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -395,7 +406,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_ONE_WITH";
@@ -403,13 +413,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -418,7 +430,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "SET_REF";
@@ -426,13 +437,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -441,7 +454,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_REFS";
@@ -449,13 +461,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -464,7 +478,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET_REFS";
@@ -472,15 +485,13 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
-        try {
+      this.socket.onmessage = (data) => {try {
           const data_json = JSON.parse(data.toString());
 
           resolve(data_json);
         } catch {
           resolve(undefined);
-        }
-      });
+        }}
     });
   }
 
@@ -489,7 +500,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "SET_USER";
@@ -497,13 +507,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -512,7 +524,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET_USER";
@@ -520,15 +531,13 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
-        try {
+      this.socket.onmessage = (data) => {try {
           const data_json = JSON.parse(data.toString());
 
           resolve(data_json);
         } catch {
           resolve(undefined);
-        }
-      });
+        }}
     });
   }
 
@@ -537,7 +546,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "PUT_USER";
@@ -545,13 +553,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -560,7 +570,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_USER";
@@ -568,13 +577,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -583,7 +594,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_AUTH";
@@ -591,13 +601,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -606,7 +618,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "INJECT";
@@ -614,14 +625,14 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
         try {
           const data_json = JSON.parse(data.toString());
           resolve(data_json);
         } catch {
           resolve(data.toString());
         }
-      });
+      }
     });
   }
 
@@ -630,7 +641,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET_ALL";
@@ -638,15 +648,13 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
-        try {
+      this.socket.onmessage = (data) => {try {
           const data_json = JSON.parse(data.toString());
 
           resolve(data_json);
         } catch {
           resolve(undefined);
-        }
-      });
+        }}
     });
   }
 
@@ -655,7 +663,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_ALL";
@@ -663,13 +670,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -678,7 +687,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_ALL_WITH";
@@ -686,13 +694,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -701,7 +711,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "PUSH";
@@ -709,13 +718,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -724,7 +735,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "REMOVE";
@@ -732,13 +742,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -747,7 +759,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "POP";
@@ -755,13 +766,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -770,7 +783,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "SPLICE";
@@ -778,13 +790,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -793,7 +807,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DECRYPT";
@@ -801,13 +814,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -816,7 +831,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "PUT_ALL";
@@ -824,13 +838,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 
@@ -839,7 +855,6 @@ export default class Satori {
       await this.getSocket();
     }
 
-
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_REF";
@@ -847,13 +862,15 @@ export default class Satori {
     this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      this.socket.on("data", (data) => {
+      this.socket.onmessage = (data) => {
+        const data_json = JSON.parse(data.toString());
+
         if (data.toString() == "OK") {
           resolve(true);
         } else {
           reject(false);
         }
-      });
+      };
     });
   }
 }

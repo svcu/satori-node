@@ -107,7 +107,7 @@ var Satori = class {
       }
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
           const dataStr = data.toString();
           if (dataStr == "OK") {
             this.socket.close();
@@ -115,7 +115,7 @@ var Satori = class {
           } else {
             resolve(dataStr);
           }
-        });
+        };
       });
     });
   }
@@ -129,13 +129,13 @@ var Satori = class {
       payload.command = "GET";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
           const data_json = JSON.parse(data.toString());
           if (data_json.key == "not found") {
             resolve(void 0);
           }
           resolve(data_json);
-        });
+        };
       });
     });
   }
@@ -149,13 +149,14 @@ var Satori = class {
       }
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -169,13 +170,14 @@ var Satori = class {
       }
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -189,13 +191,14 @@ var Satori = class {
       }
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -209,13 +212,14 @@ var Satori = class {
       }
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -229,14 +233,14 @@ var Satori = class {
       payload.command = "GET_VERTEX";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
           try {
             const data_json = JSON.parse(data.toString());
             resolve(data_json);
           } catch (e) {
             resolve(void 0);
           }
-        });
+        };
       });
     });
   }
@@ -250,13 +254,14 @@ var Satori = class {
       payload.command = "DELETE_VERTEX";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -270,13 +275,13 @@ var Satori = class {
       payload.command = "DFS";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
           try {
             resolve(JSON.parse(data.toString()));
           } catch (e) {
             resolve(void 0);
           }
-        });
+        };
       });
     });
   }
@@ -290,14 +295,14 @@ var Satori = class {
       payload.command = "GET_ALL_WITH";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
           try {
             const data_json = JSON.parse(data.toString());
             resolve(data_json);
           } catch (e) {
             resolve(void 0);
           }
-        });
+        };
       });
     });
   }
@@ -311,14 +316,14 @@ var Satori = class {
       payload.command = "GET_ONE_WITH";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
           try {
             const data_json = JSON.parse(data.toString());
             resolve(data_json);
           } catch (e) {
             resolve(void 0);
           }
-        });
+        };
       });
     });
   }
@@ -332,13 +337,14 @@ var Satori = class {
       payload.command = "PUT_ALL_WITH";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -352,13 +358,14 @@ var Satori = class {
       payload.command = "PUT_ONE_WITH";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -372,13 +379,14 @@ var Satori = class {
       payload.command = "DELETE_ONE_WITH";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -392,13 +400,14 @@ var Satori = class {
       payload.command = "SET_REF";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -412,13 +421,14 @@ var Satori = class {
       payload.command = "DELETE_REFS";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -432,14 +442,14 @@ var Satori = class {
       payload.command = "GET_REFS";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
           try {
             const data_json = JSON.parse(data.toString());
             resolve(data_json);
           } catch (e) {
             resolve(void 0);
           }
-        });
+        };
       });
     });
   }
@@ -453,13 +463,14 @@ var Satori = class {
       payload.command = "SET_USER";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -473,14 +484,14 @@ var Satori = class {
       payload.command = "GET_USER";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
           try {
             const data_json = JSON.parse(data.toString());
             resolve(data_json);
           } catch (e) {
             resolve(void 0);
           }
-        });
+        };
       });
     });
   }
@@ -494,13 +505,14 @@ var Satori = class {
       payload.command = "PUT_USER";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -514,13 +526,14 @@ var Satori = class {
       payload.command = "DELETE_USER";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -534,13 +547,14 @@ var Satori = class {
       payload.command = "DELETE_AUTH";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -554,14 +568,14 @@ var Satori = class {
       payload.command = "INJECT";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
           try {
             const data_json = JSON.parse(data.toString());
             resolve(data_json);
           } catch (e) {
             resolve(data.toString());
           }
-        });
+        };
       });
     });
   }
@@ -575,14 +589,14 @@ var Satori = class {
       payload.command = "GET_ALL";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
           try {
             const data_json = JSON.parse(data.toString());
             resolve(data_json);
           } catch (e) {
             resolve(void 0);
           }
-        });
+        };
       });
     });
   }
@@ -596,13 +610,14 @@ var Satori = class {
       payload.command = "DELETE_ALL";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -616,13 +631,14 @@ var Satori = class {
       payload.command = "DELETE_ALL_WITH";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -636,13 +652,14 @@ var Satori = class {
       payload.command = "PUSH";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -656,13 +673,14 @@ var Satori = class {
       payload.command = "REMOVE";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -676,13 +694,14 @@ var Satori = class {
       payload.command = "POP";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -696,13 +715,14 @@ var Satori = class {
       payload.command = "SPLICE";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -716,13 +736,14 @@ var Satori = class {
       payload.command = "DECRYPT";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -736,13 +757,14 @@ var Satori = class {
       payload.command = "PUT_ALL";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
@@ -756,13 +778,14 @@ var Satori = class {
       payload.command = "DELETE_REF";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.on("data", (data) => {
+        this.socket.onmessage = (data) => {
+          const data_json = JSON.parse(data.toString());
           if (data.toString() == "OK") {
             resolve(true);
           } else {
             reject(false);
           }
-        });
+        };
       });
     });
   }
