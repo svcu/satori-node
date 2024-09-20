@@ -102,7 +102,9 @@ export default class Satori {
 
           resolve(true);
         } else {
-          resolve(dataStr);
+          if(dataStr != JSON.stringify(payload)){
+            resolve(dataStr);
+          }
         }
       });
     });
@@ -128,7 +130,9 @@ export default class Satori {
           resolve(undefined);
         }
 
-        resolve(data_json);
+        if(data_json != payload){
+          resolve(data_json);
+        }
       });
       
     });
@@ -148,12 +152,14 @@ export default class Satori {
     return new Promise((resolve, reject) => {
 
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
+        
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
       
@@ -173,12 +179,14 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
+        
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -197,12 +205,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -221,12 +230,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -249,7 +259,9 @@ export default class Satori {
         try {
           const data_json = JSON.parse(data.toString());
 
-          resolve(data_json);
+          if(data_json != payload){
+            resolve(data_json);
+          }
         } catch {
           resolve(undefined);
         }
@@ -272,12 +284,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -297,7 +310,10 @@ export default class Satori {
     return new Promise((resolve, reject) => {
         this.socket.on("message", data => {
           try {
-            resolve(JSON.parse(data.toString()));
+            if(data.toString() != JSON.stringify(payload)){
+              resolve(JSON.parse(data.toString()));
+
+            }
           } catch {
             resolve(undefined);
           }
@@ -321,8 +337,8 @@ export default class Satori {
       this.socket.onmessage = (data)=>{
         try {
           const data_json = JSON.parse(data.toString());
-
-          resolve(data_json);
+          if(data_json != payload) resolve(data_json);
+          
         } catch {
           resolve(undefined);
         }
@@ -346,7 +362,8 @@ export default class Satori {
       this.socket.on("message", data => {try {
           const data_json = JSON.parse(data.toString());
 
-          resolve(data_json);
+          if(data_json != payload) resolve(data_json);
+
         } catch {
           resolve(undefined);
         }})
@@ -366,12 +383,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -390,12 +408,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -414,12 +433,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -438,12 +458,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -462,12 +483,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -488,7 +510,8 @@ export default class Satori {
       this.socket.on("message", data => {try {
           const data_json = JSON.parse(data.toString());
 
-          resolve(data_json);
+          if(data_json != payload) resolve(data_json);
+
         } catch {
           resolve(undefined);
         }})
@@ -508,12 +531,14 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
+  
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -534,7 +559,8 @@ export default class Satori {
       this.socket.on("message", data => {try {
           const data_json = JSON.parse(data.toString());
 
-          resolve(data_json);
+          if(data_json != payload) resolve(data_json);
+
         } catch {
           resolve(undefined);
         }})
@@ -554,12 +580,12 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
-
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -578,12 +604,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -602,12 +629,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -628,7 +656,8 @@ export default class Satori {
       this.socket.on("message", data => {
         try {
           const data_json = JSON.parse(data.toString());
-          resolve(data_json);
+          if(data_json != payload) resolve(data_json);
+
         } catch {
           resolve(data.toString());
         }
@@ -651,7 +680,8 @@ export default class Satori {
       this.socket.on("message", data => {try {
           const data_json = JSON.parse(data.toString());
 
-          resolve(data_json);
+          if(data_json != payload) resolve(data_json);
+
         } catch {
           resolve(undefined);
         }})
@@ -671,12 +701,12 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
-
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -695,12 +725,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -719,12 +750,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -743,12 +775,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -767,12 +800,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -791,12 +825,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -815,12 +850,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -839,12 +875,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
@@ -863,12 +900,13 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
       this.socket.on("message", data => {
-        const data_json = JSON.parse(data.toString());
 
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          reject(false);
+          if(data.toString() != JSON.stringify(payload)){
+            reject(false);
+          }
         }
       });
     });
