@@ -60,15 +60,18 @@ export default class Satori {
     this.port = port;
   }
 
-  async getSocket() {
+  async getSocket(): Promise<boolean> {
     const skport = this.port + 11;
     const ws = new WebSocket("ws://" + this.host + ":" + skport);
-    ws.onopen = (e: WebSocket.Event) => {
-      this.socket = ws;
-    };
-    ws.onerror = (e: WebSocket.ErrorEvent) => {
-      throw new Error("Error connecting");
-    };
+    return new Promise((resolve, reject) => {
+      ws.onopen = (e: WebSocket.Event) => {
+        this.socket = ws;
+        resolve(true);
+      };
+      ws.onerror = (e: WebSocket.ErrorEvent) => {
+        throw new Error("Error connecting");
+      };
+    })
   }
 
   async set(payload: SetPayload): Promise<string | boolean> {

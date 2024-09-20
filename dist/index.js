@@ -79,12 +79,15 @@ var Satori = class {
     return __async(this, null, function* () {
       const skport = this.port + 11;
       const ws = new import_ws.default("ws://" + this.host + ":" + skport);
-      ws.onopen = (e) => {
-        this.socket = ws;
-      };
-      ws.onerror = (e) => {
-        throw new Error("Error connecting");
-      };
+      return new Promise((resolve, reject) => {
+        ws.onopen = (e) => {
+          this.socket = ws;
+          resolve(true);
+        };
+        ws.onerror = (e) => {
+          throw new Error("Error connecting");
+        };
+      });
     });
   }
   set(payload) {
