@@ -22,10 +22,8 @@ import { PushPayload } from "./models/push";
 import { PopPayload } from "./models/pop";
 import { PutAllPayload } from "./models/put_all";
 import { DeleteRefPayload } from "./models/delete_ref";
-import tls from "tls"
+import tls from "tls";
 import WebSocket from "ws";
-
-
 
 export default class Satori {
   host!: string;
@@ -33,6 +31,7 @@ export default class Satori {
   username!: string;
   token!: string;
   network_pwd!: string;
+  socket!: WebSocket;
 
   constructor(
     host: string,
@@ -61,22 +60,16 @@ export default class Satori {
     this.port = port;
   }
 
-  async getSocket(): Promise<WebSocket> {
-
+  async getSocket() {
     const skport = this.port + 11;
-    const ws = new WebSocket("ws://"+this.host+":"+skport);
-      return new Promise((resolve, reject)=>{
-        ws.onopen = (e: WebSocket.Event) => {
-            resolve(ws);
-        }
-        ws.onerror = (e: WebSocket.ErrorEvent) => {
-          reject(e);
-        }
-      })
-
+    const ws = new WebSocket("ws://" + this.host + ":" + skport);
+    ws.onopen = (e: WebSocket.Event) => {
+      this.socket = ws;
+    };
+    ws.onerror = (e: WebSocket.ErrorEvent) => {
+      throw new Error("Error connecting");
+    };
   }
-
-
 
   async set(payload: SetPayload): Promise<string | boolean> {
     if (!payload.expires) payload.expires = false;
@@ -91,17 +84,18 @@ export default class Satori {
     if (this.token) payload.token = this.token;
     payload.command = "SET";
 
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
 
-    socket.send(JSON.stringify(payload))
-
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         const dataStr: string = data.toString();
 
         if (dataStr == "OK") {
-          socket.close();
+          this.socket.close();
 
           resolve(true);
         } else {
@@ -112,16 +106,21 @@ export default class Satori {
   }
 
   async get(payload: GetPayload): Promise<any | undefined> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET";
 
-    socket.send(JSON.stringify(payload));
+    this.socket
+.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket
+.on("data", (data) => {
         const data_json = JSON.parse(data.toString());
 
         if (data_json.key == "not found") {
@@ -138,11 +137,14 @@ export default class Satori {
     if (this.token) payload.token = this.token;
     payload.command = "PUT";
 
-    const socket = await this.getSocket();
-    socket.send(JSON.stringify(payload));
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -157,11 +159,14 @@ export default class Satori {
     if (this.token) payload.token = this.token;
     payload.command = "DELETE";
 
-    const socket = await this.getSocket();
-    socket.send(JSON.stringify(payload));
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -176,11 +181,14 @@ export default class Satori {
     if (this.token) payload.token = this.token;
     payload.command = "ENCRYPT";
 
-    const socket = await this.getSocket();
-    socket.send(JSON.stringify(payload));
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -195,11 +203,14 @@ export default class Satori {
     if (this.token) payload.token = this.token;
     payload.command = "SET_VERTEX";
 
-    const socket = await this.getSocket();
-    socket.send(JSON.stringify(payload));
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -210,16 +221,19 @@ export default class Satori {
   }
 
   async getVertex(payload: GetPayload): Promise<any | undefined> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET_VERTEX";
 
-    socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         try {
           const data_json = JSON.parse(data.toString());
 
@@ -232,16 +246,19 @@ export default class Satori {
   }
 
   async deleteVertex(payload: DeleteVertexPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_VERTEX";
 
-    socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -252,16 +269,19 @@ export default class Satori {
   }
 
   async dfs(payload: DFSPayload): Promise<any | undefined> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DFS";
 
-    socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         try {
           resolve(JSON.parse(data.toString()));
         } catch {
@@ -272,16 +292,19 @@ export default class Satori {
   }
 
   async getAllWith(payload: GetAllWithPayload): Promise<any[] | undefined> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET_ALL_WITH";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         try {
           const data_json = JSON.parse(data.toString());
 
@@ -294,16 +317,19 @@ export default class Satori {
   }
 
   async getOneWith(payload: GetAllWithPayload): Promise<any | undefined> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET_ONE_WITH";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         try {
           const data_json = JSON.parse(data.toString());
 
@@ -316,16 +342,19 @@ export default class Satori {
   }
 
   async putAllWith(payload: PutAllWithPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "PUT_ALL_WITH";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -336,16 +365,19 @@ export default class Satori {
   }
 
   async putOneWith(payload: PutAllWithPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "PUT_ONE_WITH";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -356,16 +388,19 @@ export default class Satori {
   }
 
   async deleteOneWith(payload: GetAllWithPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_ONE_WITH";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -376,16 +411,19 @@ export default class Satori {
   }
 
   async setRef(payload: SetRefPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "SET_REF";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -396,16 +434,19 @@ export default class Satori {
   }
 
   async deleteRefs(payload: DeleteRefsPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_REFS";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -416,16 +457,19 @@ export default class Satori {
   }
 
   async getRefs(payload: DeleteRefsPayload): Promise<any[] | undefined> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET_REFS";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         try {
           const data_json = JSON.parse(data.toString());
 
@@ -438,16 +482,19 @@ export default class Satori {
   }
 
   async setUser(payload: SetUserPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "SET_USER";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -458,16 +505,19 @@ export default class Satori {
   }
 
   async getUser(payload: GetUserPayload): Promise<any | undefined> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET_USER";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         try {
           const data_json = JSON.parse(data.toString());
 
@@ -480,16 +530,19 @@ export default class Satori {
   }
 
   async putUser(payload: PutUserPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "PUT_USER";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -500,16 +553,19 @@ export default class Satori {
   }
 
   async deleteUser(payload: DeleteUserPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_USER";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -520,16 +576,19 @@ export default class Satori {
   }
 
   async deleteAuth(payload: Command): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_AUTH";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -540,16 +599,19 @@ export default class Satori {
   }
 
   async inject(payload: InjectPayload): Promise<any | undefined> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "INJECT";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         try {
           const data_json = JSON.parse(data.toString());
           resolve(data_json);
@@ -561,16 +623,19 @@ export default class Satori {
   }
 
   async getAll(payload: GetAllPayload): Promise<any[] | undefined> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "GET_ALL";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         try {
           const data_json = JSON.parse(data.toString());
 
@@ -583,16 +648,19 @@ export default class Satori {
   }
 
   async deleteAll(payload: GetAllPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_ALL";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -603,16 +671,19 @@ export default class Satori {
   }
 
   async deleteAllWith(payload: DeleteAllWithPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_ALL_WITH";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -623,16 +694,19 @@ export default class Satori {
   }
 
   async push(payload: PushPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "PUSH";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -643,16 +717,19 @@ export default class Satori {
   }
 
   async remove(payload: PushPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "REMOVE";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -663,16 +740,19 @@ export default class Satori {
   }
 
   async pop(payload: PopPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "POP";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -683,16 +763,19 @@ export default class Satori {
   }
 
   async splice(payload: PopPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "SPLICE";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -703,16 +786,19 @@ export default class Satori {
   }
 
   async decrypt(payload: EncryptPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DECRYPT";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -723,16 +809,19 @@ export default class Satori {
   }
 
   async put_all(payload: PutAllPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "PUT_ALL";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
@@ -743,16 +832,19 @@ export default class Satori {
   }
 
   async delete_ref(payload: DeleteRefPayload): Promise<Boolean> {
-    const socket = await this.getSocket();
+    if (this.socket == null) {
+      await this.getSocket();
+    }
+
 
     if (this.username) payload.username = this.username;
     if (this.token) payload.token = this.token;
     payload.command = "DELETE_REF";
 
-   socket.send(JSON.stringify(payload));
+    this.socket.send(JSON.stringify(payload));
 
     return new Promise((resolve, reject) => {
-      socket.on("data", (data) => {
+      this.socket.on("data", (data) => {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
