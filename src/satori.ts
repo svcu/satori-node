@@ -157,9 +157,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
       
@@ -184,9 +182,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -209,9 +205,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -234,9 +228,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -288,9 +280,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -310,10 +300,10 @@ export default class Satori {
     return new Promise((resolve, reject) => {
         this.socket.on("message", data => {
           try {
-            if(data.toString() != JSON.stringify(payload)){
+
               resolve(JSON.parse(data.toString()));
 
-            }
+            
           } catch {
             resolve(undefined);
           }
@@ -387,9 +377,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -412,9 +400,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -437,9 +423,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -462,9 +446,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -487,9 +469,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -536,9 +516,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -583,9 +561,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -608,9 +584,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -633,9 +607,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -704,9 +676,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -729,9 +699,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -754,9 +722,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -779,9 +745,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -804,9 +768,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -829,9 +791,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -854,9 +814,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -879,9 +837,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
@@ -904,9 +860,7 @@ export default class Satori {
         if (data.toString() == "OK") {
           resolve(true);
         } else {
-          if(data.toString() != JSON.stringify(payload)){
-            reject(false);
-          }
+          reject(false)
         }
       });
     });
