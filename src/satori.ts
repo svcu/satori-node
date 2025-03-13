@@ -326,7 +326,7 @@ export default class Satori {
 
       this.socket.onmessage = (data)=>{
         try {
-          const data_json = JSON.parse(data.toString());
+          const data_json = JSON.parse(data.data.toString());
           if(data_json != payload) resolve(data_json);
           
         } catch {
