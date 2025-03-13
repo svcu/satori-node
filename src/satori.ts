@@ -324,9 +324,9 @@ export default class Satori {
 
     return new Promise((resolve, reject) => {
 
-      this.socket.onmessage = (data)=>{
+      this.socket.on("message", data=>{
         try {
-          const data_json = JSON.parse(data.data.toString());
+          const data_json = JSON.parse(data.toString());
           if(data_json != payload) resolve(data_json);
           
         } catch {
@@ -334,7 +334,7 @@ export default class Satori {
         }
       }
 
-    });
+    )});
   }
 
   async getOneWith(payload: GetAllWithPayload): Promise<any | undefined> {
