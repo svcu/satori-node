@@ -23,18 +23,18 @@ interface PutPayload extends Command {
     replace_value: any;
 }
 
-interface SetPayload extends Command {
-    key?: string;
-    data: object;
-    vertices?: string[];
-    expiration_time?: number;
-    expires?: boolean;
-    type?: string;
-}
-
 interface Vertex {
     relation?: string;
     neighbor: string;
+}
+
+interface SetPayload extends Command {
+    key?: string;
+    data: object;
+    vertices?: Vertex[];
+    expiration_time?: number;
+    expires?: boolean;
+    type?: string;
 }
 
 interface SetVertexPayload extends Command {

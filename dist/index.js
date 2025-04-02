@@ -157,9 +157,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -179,9 +177,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -201,9 +197,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -223,9 +217,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -268,9 +260,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -288,9 +278,7 @@ var Satori = class {
       return new Promise((resolve, reject) => {
         this.socket.on("message", (data) => {
           try {
-            if (data.toString() != JSON.stringify(payload)) {
-              resolve(JSON.parse(data.toString()));
-            }
+            resolve(JSON.parse(data.toString()));
           } catch (e) {
             resolve(void 0);
           }
@@ -308,14 +296,17 @@ var Satori = class {
       payload.command = "GET_ALL_WITH";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
-        this.socket.onmessage = (data) => {
-          try {
-            const data_json = JSON.parse(data.toString());
-            if (data_json != payload) resolve(data_json);
-          } catch (e) {
-            resolve(void 0);
+        this.socket.on(
+          "message",
+          (data) => {
+            try {
+              const data_json = JSON.parse(data.toString());
+              if (data_json != payload) resolve(data_json);
+            } catch (e) {
+              resolve(void 0);
+            }
           }
-        };
+        );
       });
     });
   }
@@ -354,9 +345,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -376,9 +365,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -398,9 +385,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -420,9 +405,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -442,9 +425,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -485,9 +466,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -528,9 +507,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -550,9 +527,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -572,9 +547,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -636,9 +609,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -658,9 +629,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -680,9 +649,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -702,9 +669,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -724,9 +689,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -746,9 +709,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -768,9 +729,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -790,9 +749,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
@@ -812,9 +769,7 @@ var Satori = class {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            if (data.toString() != JSON.stringify(payload)) {
-              reject(false);
-            }
+            reject(false);
           }
         });
       });
