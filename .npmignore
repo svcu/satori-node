@@ -2,3 +2,4 @@ src/
 tsconfig.json
 satori-node-1.0.3.tgz
 node_modules/
+dist
