@@ -107,6 +107,28 @@ var Satori = class {
       });
     });
   }
+  query(payload) {
+    return __async(this, null, function* () {
+      if (this.socket == null) {
+        yield this.getSocket();
+      }
+      if (this.username) payload.username = this.username;
+      if (this.token) payload.token = this.token;
+      payload.command = "QUERY";
+      this.socket.send(JSON.stringify(payload));
+      return new Promise((resolve, reject) => {
+        this.socket.on("message", (data) => {
+          const data_json = JSON.parse(data.toString());
+          if (data_json.key == "not found") {
+            resolve(void 0);
+          }
+          if (data_json != payload) {
+            resolve(data_json);
+          }
+        });
+      });
+    });
+  }
   put(payload) {
     return __async(this, null, function* () {
       if (this.username) payload.username = this.username;
@@ -245,111 +267,6 @@ var Satori = class {
             resolve(JSON.parse(data.toString()));
           } catch (e) {
             resolve(void 0);
-          }
-        });
-      });
-    });
-  }
-  getAllWith(payload) {
-    return __async(this, null, function* () {
-      if (this.socket == null) {
-        yield this.getSocket();
-      }
-      if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
-      payload.command = "GET_ALL_WITH";
-      this.socket.send(JSON.stringify(payload));
-      return new Promise((resolve, reject) => {
-        this.socket.on(
-          "message",
-          (data) => {
-            try {
-              const data_json = JSON.parse(data.toString());
-              if (data_json != payload) resolve(data_json);
-            } catch (e) {
-              resolve(void 0);
-            }
-          }
-        );
-      });
-    });
-  }
-  getOneWith(payload) {
-    return __async(this, null, function* () {
-      if (this.socket == null) {
-        yield this.getSocket();
-      }
-      if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
-      payload.command = "GET_ONE_WITH";
-      this.socket.send(JSON.stringify(payload));
-      return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
-          try {
-            const data_json = JSON.parse(data.toString());
-            if (data_json != payload) resolve(data_json);
-          } catch (e) {
-            resolve(void 0);
-          }
-        });
-      });
-    });
-  }
-  putAllWith(payload) {
-    return __async(this, null, function* () {
-      if (this.socket == null) {
-        yield this.getSocket();
-      }
-      if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
-      payload.command = "PUT_ALL_WITH";
-      this.socket.send(JSON.stringify(payload));
-      return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
-          if (data.toString() == "OK") {
-            resolve(true);
-          } else {
-            reject(false);
-          }
-        });
-      });
-    });
-  }
-  putOneWith(payload) {
-    return __async(this, null, function* () {
-      if (this.socket == null) {
-        yield this.getSocket();
-      }
-      if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
-      payload.command = "PUT_ONE_WITH";
-      this.socket.send(JSON.stringify(payload));
-      return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
-          if (data.toString() == "OK") {
-            resolve(true);
-          } else {
-            reject(false);
-          }
-        });
-      });
-    });
-  }
-  deleteOneWith(payload) {
-    return __async(this, null, function* () {
-      if (this.socket == null) {
-        yield this.getSocket();
-      }
-      if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
-      payload.command = "DELETE_ONE_WITH";
-      this.socket.send(JSON.stringify(payload));
-      return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
-          if (data.toString() == "OK") {
-            resolve(true);
-          } else {
-            reject(false);
           }
         });
       });
@@ -517,88 +434,6 @@ var Satori = class {
       });
     });
   }
-  inject(payload) {
-    return __async(this, null, function* () {
-      if (this.socket == null) {
-        yield this.getSocket();
-      }
-      if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
-      payload.command = "INJECT";
-      this.socket.send(JSON.stringify(payload));
-      return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
-          try {
-            const data_json = JSON.parse(data.toString());
-            if (data_json != payload) resolve(data_json);
-          } catch (e) {
-            resolve(data.toString());
-          }
-        });
-      });
-    });
-  }
-  getAll(payload) {
-    return __async(this, null, function* () {
-      if (this.socket == null) {
-        yield this.getSocket();
-      }
-      if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
-      payload.command = "GET_ALL";
-      this.socket.send(JSON.stringify(payload));
-      return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
-          try {
-            const data_json = JSON.parse(data.toString());
-            if (data_json != payload) resolve(data_json);
-          } catch (e) {
-            resolve(void 0);
-          }
-        });
-      });
-    });
-  }
-  deleteAll(payload) {
-    return __async(this, null, function* () {
-      if (this.socket == null) {
-        yield this.getSocket();
-      }
-      if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
-      payload.command = "DELETE_ALL";
-      this.socket.send(JSON.stringify(payload));
-      return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
-          if (data.toString() == "OK") {
-            resolve(true);
-          } else {
-            reject(false);
-          }
-        });
-      });
-    });
-  }
-  deleteAllWith(payload) {
-    return __async(this, null, function* () {
-      if (this.socket == null) {
-        yield this.getSocket();
-      }
-      if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
-      payload.command = "DELETE_ALL_WITH";
-      this.socket.send(JSON.stringify(payload));
-      return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
-          if (data.toString() == "OK") {
-            resolve(true);
-          } else {
-            reject(false);
-          }
-        });
-      });
-    });
-  }
   push(payload) {
     return __async(this, null, function* () {
       if (this.socket == null) {
@@ -687,26 +522,6 @@ var Satori = class {
       if (this.username) payload.username = this.username;
       if (this.token) payload.token = this.token;
       payload.command = "DECRYPT";
-      this.socket.send(JSON.stringify(payload));
-      return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
-          if (data.toString() == "OK") {
-            resolve(true);
-          } else {
-            reject(false);
-          }
-        });
-      });
-    });
-  }
-  put_all(payload) {
-    return __async(this, null, function* () {
-      if (this.socket == null) {
-        yield this.getSocket();
-      }
-      if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
-      payload.command = "PUT_ALL";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
         this.socket.on("message", (data) => {

@@ -84,52 +84,7 @@ export default class Schema<T extends object> {
     return this.satori.dfs({ node: this.key, relation: relation });
   }
 
-  async getAllWith(field_array: FieldEntry[]): Promise<any[] | undefined> {
-    return this.satori.getAllWith({
-      field_array: field_array,
-      type: this.schemaName,
-    });
-  }
-
-  async getOneWith(field_array: FieldEntry[]): Promise<any | undefined> {
-    return this.satori.getOneWith({
-      field_array: field_array,
-      type: this.schemaName,
-    });
-  }
-
-  async putAllWith(
-    field_array: FieldEntry[],
-    replaceField: string,
-    replaceValue: any
-  ): Promise<Boolean> {
-    return this.satori.putAllWith({
-      replace_field: replaceField,
-      replace_value: replaceValue,
-      type: this.schemaName,
-      field_array: field_array,
-    });
-  }
-
-  async putOneWith(
-    field_array: FieldEntry[],
-    replaceField: string,
-    replaceValue: any
-  ): Promise<Boolean> {
-    return this.satori.putOneWith({
-      replace_field: replaceField,
-      replace_value: replaceValue,
-      type: this.schemaName,
-      field_array: field_array,
-    });
-  }
-
-  async deleteOneWith(field_array: FieldEntry[]): Promise<Boolean> {
-    return this.satori.deleteOneWith({
-      field_array: field_array,
-      type: this.schemaName,
-    });
-  }
+ 
 
   async setRef(ref: string): Promise<Boolean> {
     return await this.satori.setRef({ key: this.key, ref: ref });
@@ -146,17 +101,7 @@ export default class Schema<T extends object> {
     return await this.satori.getRefs({ key: this.key });
   }
 
-  async getAll(): Promise<T[] | undefined> {
-    return await this.satori.getAll({ type: this.schemaName });
-  }
-
-  async deleteAll(): Promise<Boolean> {
-    return await this.satori.deleteAll({ type: this.schemaName });
-  }
-
-  async deleteAllWith(field_array: FieldEntry[]): Promise<Boolean> {
-    return await this.satori.deleteAllWith({field_array: field_array, type: this.schemaName });
-  }
+ 
 
   async push(value: any, array: string): Promise<Boolean> {
     return await this.satori.push({key: this.key, value: value, array: array})
