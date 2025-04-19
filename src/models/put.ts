@@ -1,10 +1,12 @@
+import { FieldEntry } from "satori-node";
 import { Command } from "./command";
 
 interface PutPayload extends Command{
     
-    key: string;
+    key?: string;
     replace_field: string;
-    replace_value: any 
+    replace_value: any;
+    field_array?: FieldEntry[];
 
 }
 

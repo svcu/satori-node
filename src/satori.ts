@@ -2,27 +2,15 @@ import { EncryptPayload } from "./models/encrypt";
 import { GetPayload } from "./models/get";
 import { PutPayload } from "./models/put";
 import { SetPayload } from "./models/set";
-import { Socket } from "net";
 import { SetVertexPayload } from "./models/set_vertex";
 import { DeleteVertexPayload } from "./models/delete_vertex";
 import { DFSPayload } from "./models/dfs";
-import { GetAllWithPayload } from "./models/get_all_with";
-import { PutAllWithPayload } from "./models/put_all_with";
-import { Command } from "./models/command";
-import { SetUserPayload } from "./models/set_user";
-import { GetUserPayload } from "./models/get_user";
-import { PutUserPayload } from "./models/put_user";
-import { DeleteUserPayload } from "./models/delete_user";
-import { InjectPayload } from "./models/inject";
-import { GetAllPayload } from "./models/get_all";
 import { DeletePayload, SetRefPayload } from "./models";
 import { DeleteRefsPayload } from "./models/delete_refs";
-import { DeleteAllWithPayload } from "./models/delete_all_with";
 import { PushPayload } from "./models/push";
 import { PopPayload } from "./models/pop";
 import { PutAllPayload } from "./models/put_all";
 import { DeleteRefPayload } from "./models/delete_ref";
-import tls from "tls";
 import WebSocket from "ws";
 import { QueryPayload } from "./models/query";
 
@@ -30,7 +18,7 @@ export default class Satori {
   host!: string;
   port!: number;
   username!: string;
-  token!: string;
+  password!: string;
   network_pwd!: string;
   socket!: WebSocket;
 
@@ -38,7 +26,7 @@ export default class Satori {
     host: string,
     port: number,
     username?: string,
-    token?: string,
+    password?: string,
     network_pwd?: string
   ) {
     this.host = host;
@@ -50,7 +38,7 @@ export default class Satori {
     }
 
     if (username) this.username = username;
-    if (token) this.token = token;
+    if (password) this.password = password;
   }
 
   setHost(host: string) {
@@ -85,7 +73,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "SET";
 
     if (this.socket == null) {
@@ -118,7 +106,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "GET";
 
     this.socket.send(JSON.stringify(payload));
@@ -147,7 +135,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "QUERY";
 
     this.socket.send(JSON.stringify(payload));
@@ -171,7 +159,7 @@ export default class Satori {
 
   async put(payload: PutPayload): Promise<boolean> {
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "PUT";
 
     if (this.socket == null) {
@@ -197,7 +185,7 @@ export default class Satori {
 
   async delete(payload: DeletePayload): Promise<boolean> {
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "DELETE";
 
     if (this.socket == null) {
@@ -221,7 +209,7 @@ export default class Satori {
 
   async encrypt(payload: EncryptPayload): Promise<boolean> {
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "ENCRYPT";
 
     if (this.socket == null) {
@@ -244,7 +232,7 @@ export default class Satori {
 
   async setVertex(payload: SetVertexPayload): Promise<boolean> {
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "SET_VERTEX";
 
     if (this.socket == null) {
@@ -271,7 +259,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "GET_VERTEX";
 
     this.socket.send(JSON.stringify(payload));
@@ -300,7 +288,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "DELETE_VERTEX";
 
     this.socket.send(JSON.stringify(payload));
@@ -323,7 +311,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "DFS";
 
     this.socket.send(JSON.stringify(payload));
@@ -349,7 +337,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "SET_REF";
 
     this.socket.send(JSON.stringify(payload));
@@ -372,7 +360,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "DELETE_REFS";
 
     this.socket.send(JSON.stringify(payload));
@@ -395,7 +383,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "GET_REFS";
 
     this.socket.send(JSON.stringify(payload));
@@ -411,14 +399,14 @@ export default class Satori {
         }})
     });
   }
-
+/*
   async setUser(payload: SetUserPayload): Promise<Boolean> {
     if (this.socket == null) {
       await this.getSocket();
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "SET_USER";
 
     this.socket.send(JSON.stringify(payload));
@@ -442,7 +430,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "GET_USER";
 
     this.socket.send(JSON.stringify(payload));
@@ -465,7 +453,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "PUT_USER";
 
     this.socket.send(JSON.stringify(payload));
@@ -480,14 +468,14 @@ export default class Satori {
       });
     });
   }
-
-  async deleteUser(payload: DeleteUserPayload): Promise<Boolean> {
+*/
+ /* async deleteUser(payload: DeleteUserPayload): Promise<Boolean> {
     if (this.socket == null) {
       await this.getSocket();
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "DELETE_USER";
 
     this.socket.send(JSON.stringify(payload));
@@ -510,7 +498,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "DELETE_AUTH";
 
     this.socket.send(JSON.stringify(payload));
@@ -525,7 +513,7 @@ export default class Satori {
         }
       });
     });
-  }
+  }*/
 
   async push(payload: PushPayload): Promise<Boolean> {
     if (this.socket == null) {
@@ -533,7 +521,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "PUSH";
 
     this.socket.send(JSON.stringify(payload));
@@ -556,7 +544,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "REMOVE";
 
     this.socket.send(JSON.stringify(payload));
@@ -579,7 +567,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "POP";
 
     this.socket.send(JSON.stringify(payload));
@@ -602,7 +590,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "SPLICE";
 
     this.socket.send(JSON.stringify(payload));
@@ -625,7 +613,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "DECRYPT";
 
     this.socket.send(JSON.stringify(payload));
@@ -648,7 +636,7 @@ export default class Satori {
     }
 
     if (this.username) payload.username = this.username;
-    if (this.token) payload.token = this.token;
+    if (this.password) payload.password = this.password;
     payload.command = "DELETE_REF";
 
     this.socket.send(JSON.stringify(payload));

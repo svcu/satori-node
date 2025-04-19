@@ -1,7 +1,7 @@
 export interface Command{
     command?: string;
     username?: string;
-    token?: string;
+    password?: string;
     encryption_key?: string;
     type?: string
 }

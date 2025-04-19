@@ -6,7 +6,7 @@ This is the Satori Driver for NodeJS, all operations are implemented.
 
 ```ts
 const { Satori } = require("satori-node")
-const satori = new Satori(host: string, port: number, username: string?, token: string?)
+const satori = new Satori(host: string, port: number, username: string?, password: string?)
 
 
 const user_1 = {

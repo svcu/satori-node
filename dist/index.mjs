@@ -22,7 +22,7 @@ var __async = (__this, __arguments, generator) => {
 // src/satori.ts
 import WebSocket from "ws";
 var Satori = class {
-  constructor(host, port, username, token, network_pwd) {
+  constructor(host, port, username, password, network_pwd) {
     this.host = host;
     this.port = port;
     if (network_pwd) {
@@ -31,7 +31,7 @@ var Satori = class {
       this.network_pwd = "";
     }
     if (username) this.username = username;
-    if (token) this.token = token;
+    if (password) this.password = password;
   }
   setHost(host) {
     this.host = host;
@@ -64,7 +64,7 @@ var Satori = class {
         if (payload.expiration_time > -1) payload.expires = true;
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "SET";
       if (this.socket == null) {
         yield this.getSocket();
@@ -91,7 +91,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "GET";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -113,7 +113,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "QUERY";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -132,7 +132,7 @@ var Satori = class {
   put(payload) {
     return __async(this, null, function* () {
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "PUT";
       if (this.socket == null) {
         yield this.getSocket();
@@ -152,7 +152,7 @@ var Satori = class {
   delete(payload) {
     return __async(this, null, function* () {
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "DELETE";
       if (this.socket == null) {
         yield this.getSocket();
@@ -172,7 +172,7 @@ var Satori = class {
   encrypt(payload) {
     return __async(this, null, function* () {
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "ENCRYPT";
       if (this.socket == null) {
         yield this.getSocket();
@@ -192,7 +192,7 @@ var Satori = class {
   setVertex(payload) {
     return __async(this, null, function* () {
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "SET_VERTEX";
       if (this.socket == null) {
         yield this.getSocket();
@@ -215,7 +215,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "GET_VERTEX";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -238,7 +238,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "DELETE_VERTEX";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -258,7 +258,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "DFS";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -278,7 +278,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "SET_REF";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -298,7 +298,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "DELETE_REFS";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -318,7 +318,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "GET_REFS";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -333,114 +333,128 @@ var Satori = class {
       });
     });
   }
-  setUser(payload) {
-    return __async(this, null, function* () {
+  /*
+    async setUser(payload: SetUserPayload): Promise<Boolean> {
       if (this.socket == null) {
-        yield this.getSocket();
+        await this.getSocket();
       }
+  
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "SET_USER";
+  
       this.socket.send(JSON.stringify(payload));
+  
       return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
+        this.socket.on("message", data => {
+    
+  
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            reject(false);
+            reject(false)
           }
         });
       });
-    });
-  }
-  getUser(payload) {
-    return __async(this, null, function* () {
+    }
+  
+    async getUser(payload: GetUserPayload): Promise<any | undefined> {
       if (this.socket == null) {
-        yield this.getSocket();
+        await this.getSocket();
       }
+  
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "GET_USER";
+  
       this.socket.send(JSON.stringify(payload));
+  
       return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
-          try {
+        this.socket.on("message", data => {try {
             const data_json = JSON.parse(data.toString());
-            if (data_json != payload) resolve(data_json);
-          } catch (e) {
-            resolve(void 0);
-          }
-        });
+  
+            if(data_json != payload) resolve(data_json);
+  
+          } catch {
+            resolve(undefined);
+          }})
       });
-    });
-  }
-  putUser(payload) {
-    return __async(this, null, function* () {
+    }
+  
+    async putUser(payload: PutUserPayload): Promise<Boolean> {
       if (this.socket == null) {
-        yield this.getSocket();
+        await this.getSocket();
       }
+  
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "PUT_USER";
+  
       this.socket.send(JSON.stringify(payload));
+  
       return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
+        this.socket.on("message", data => {
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            reject(false);
+            reject(false)
           }
         });
       });
-    });
-  }
-  deleteUser(payload) {
-    return __async(this, null, function* () {
+    }
+  */
+  /* async deleteUser(payload: DeleteUserPayload): Promise<Boolean> {
       if (this.socket == null) {
-        yield this.getSocket();
+        await this.getSocket();
       }
+  
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "DELETE_USER";
+  
       this.socket.send(JSON.stringify(payload));
+  
       return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
+        this.socket.on("message", data => {
+  
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            reject(false);
+            reject(false)
           }
         });
       });
-    });
-  }
-  deleteAuth(payload) {
-    return __async(this, null, function* () {
+    }
+  
+    async deleteAuth(payload: Command): Promise<Boolean> {
       if (this.socket == null) {
-        yield this.getSocket();
+        await this.getSocket();
       }
+  
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "DELETE_AUTH";
+  
       this.socket.send(JSON.stringify(payload));
+  
       return new Promise((resolve, reject) => {
-        this.socket.on("message", (data) => {
+        this.socket.on("message", data => {
+  
           if (data.toString() == "OK") {
             resolve(true);
           } else {
-            reject(false);
+            reject(false)
           }
         });
       });
-    });
-  }
+    }*/
   push(payload) {
     return __async(this, null, function* () {
       if (this.socket == null) {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "PUSH";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -460,7 +474,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "REMOVE";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -480,7 +494,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "POP";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -500,7 +514,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "SPLICE";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -520,7 +534,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "DECRYPT";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -540,7 +554,7 @@ var Satori = class {
         yield this.getSocket();
       }
       if (this.username) payload.username = this.username;
-      if (this.token) payload.token = this.token;
+      if (this.password) payload.password = this.password;
       payload.command = "DELETE_REF";
       this.socket.send(JSON.stringify(payload));
       return new Promise((resolve, reject) => {
@@ -619,50 +633,6 @@ var Schema = class {
       return this.satori.dfs({ node: this.key, relation });
     });
   }
-  getAllWith(field_array) {
-    return __async(this, null, function* () {
-      return this.satori.getAllWith({
-        field_array,
-        type: this.schemaName
-      });
-    });
-  }
-  getOneWith(field_array) {
-    return __async(this, null, function* () {
-      return this.satori.getOneWith({
-        field_array,
-        type: this.schemaName
-      });
-    });
-  }
-  putAllWith(field_array, replaceField, replaceValue) {
-    return __async(this, null, function* () {
-      return this.satori.putAllWith({
-        replace_field: replaceField,
-        replace_value: replaceValue,
-        type: this.schemaName,
-        field_array
-      });
-    });
-  }
-  putOneWith(field_array, replaceField, replaceValue) {
-    return __async(this, null, function* () {
-      return this.satori.putOneWith({
-        replace_field: replaceField,
-        replace_value: replaceValue,
-        type: this.schemaName,
-        field_array
-      });
-    });
-  }
-  deleteOneWith(field_array) {
-    return __async(this, null, function* () {
-      return this.satori.deleteOneWith({
-        field_array,
-        type: this.schemaName
-      });
-    });
-  }
   setRef(ref) {
     return __async(this, null, function* () {
       return yield this.satori.setRef({ key: this.key, ref });
@@ -679,21 +649,6 @@ var Schema = class {
   getRefs() {
     return __async(this, null, function* () {
       return yield this.satori.getRefs({ key: this.key });
-    });
-  }
-  getAll() {
-    return __async(this, null, function* () {
-      return yield this.satori.getAll({ type: this.schemaName });
-    });
-  }
-  deleteAll() {
-    return __async(this, null, function* () {
-      return yield this.satori.deleteAll({ type: this.schemaName });
-    });
-  }
-  deleteAllWith(field_array) {
-    return __async(this, null, function* () {
-      return yield this.satori.deleteAllWith({ field_array, type: this.schemaName });
     });
   }
   push(value, array) {
