@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cryptojs": "^3.1.33",
     "@types/uuid": "^9.0.8",
     "@types/ws": "^8.5.12",
     "ts-node": "^10.9.2",
@@ -21,6 +22,8 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "crypto-js": "^4.2.0",
+    "cryptojs": "^2.5.3",
     "js-crypto-aes": "^1.0.6",
     "node-aes": "^1.0.1",
     "satori-node": "^1.0.26",
