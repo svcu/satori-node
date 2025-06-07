@@ -92,7 +92,7 @@ var Satori = class {
    */
   set(payload) {
     return __async(this, null, function* () {
-      const command = payload.field_array ? "SET_ALL_WITH" : "SET";
+      const command = "SET";
       return this.send(__spreadValues({ command }, payload));
     });
   }
@@ -101,7 +101,7 @@ var Satori = class {
    */
   get(payload) {
     return __async(this, null, function* () {
-      const command = payload.field_array ? payload.one ? "GET_ONE_WITH" : "GET_ALL_WITH" : "GET";
+      const command = "GET";
       return this.send(__spreadValues({ command }, payload));
     });
   }
@@ -110,7 +110,7 @@ var Satori = class {
    */
   put(payload) {
     return __async(this, null, function* () {
-      const command = payload.field_array ? payload.one ? "PUT_ONE_WITH" : "PUT_ALL_WITH" : "PUT";
+      const command = "PUT";
       return this.send(__spreadValues({ command }, payload));
     });
   }
@@ -119,7 +119,7 @@ var Satori = class {
    */
   delete(payload) {
     return __async(this, null, function* () {
-      const command = payload.field_array ? payload.one ? "DELETE_ONE_WITH" : "DELETE_ALL_WITH" : "DELETE";
+      const command = "DELETE";
       return this.send(__spreadValues({ command }, payload));
     });
   }
@@ -169,30 +169,6 @@ var Satori = class {
   decrypt(payload) {
     return __async(this, null, function* () {
       return this.send(__spreadValues({ command: "DECRYPT" }, payload));
-    });
-  }
-  /**
-   * Retrieves all objects of a given type.
-   */
-  getAll(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "GET_ALL" }, payload));
-    });
-  }
-  /**
-   * Deletes all objects of a given type.
-   */
-  deleteAll(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "DELETE_ALL" }, payload));
-    });
-  }
-  /**
-   * Replaces all matching objects with given value.
-   */
-  putAll(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "PUT_ALL" }, payload));
     });
   }
   /**
