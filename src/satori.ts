@@ -256,7 +256,7 @@ export class Satori {
    * Performs a SET operation.
    */
   async set(payload: SetPayload) {
-    const command = payload.field_array ? 'SET_ALL_WITH' : 'SET';
+    const command = 'SET';
     return this.send({ command, ...payload });
   }
 
@@ -264,7 +264,7 @@ export class Satori {
    * Performs a GET operation.
    */
   async get(payload: GetPayload) {
-    const command = payload.field_array ? (payload.one ? 'GET_ONE_WITH' : 'GET_ALL_WITH') : 'GET';
+    const command ='GET';
     return this.send({ command, ...payload });
   }
 
@@ -272,7 +272,7 @@ export class Satori {
    * Performs a PUT operation.
    */
   async put(payload: PutPayload) {
-    const command = payload.field_array ? (payload.one ? 'PUT_ONE_WITH' : 'PUT_ALL_WITH') : 'PUT';
+    const command = 'PUT';
     return this.send({ command, ...payload });
   }
 
@@ -280,7 +280,7 @@ export class Satori {
    * Performs a DELETE operation.
    */
   async delete(payload: DeletePayload) {
-    const command = payload.field_array ? (payload.one ? 'DELETE_ONE_WITH' : 'DELETE_ALL_WITH') : 'DELETE';
+    const command = 'DELETE';
     return this.send({ command, ...payload });
   }
 
@@ -326,26 +326,6 @@ export class Satori {
     return this.send({ command: 'DECRYPT', ...payload });
   }
 
-  /**
-   * Retrieves all objects of a given type.
-   */
-  async getAll(payload: TypeOnlyPayload) {
-    return this.send({ command: 'GET_ALL', ...payload });
-  }
-
-  /**
-   * Deletes all objects of a given type.
-   */
-  async deleteAll(payload: TypeOnlyPayload) {
-    return this.send({ command: 'DELETE_ALL', ...payload });
-  }
-
-  /**
-   * Replaces all matching objects with given value.
-   */
-  async putAll(payload: PutPayload) {
-    return this.send({ command: 'PUT_ALL', ...payload });
-  }
 
   /**
    * Sets a reference to another object.
