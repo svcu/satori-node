@@ -84,11 +84,13 @@ export interface DeletePayload {
  *   key: "user:123",
  *   vertex: "friend:456",
  *   encryption_key: "secret"
+ *   relation: "friend"
  * }
  */
 export interface SetVertexPayload {
   key: string;
   vertex: string | string[];
+  relation?: string;
   encryption_key: string;
 }
 
