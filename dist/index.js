@@ -115,7 +115,7 @@ var Satori = class {
     return new Promise((resolve) => {
       var _a;
       const id = (0, import_uuid.v4)();
-      const msg = __spreadValues({ id }, commandPayload);
+      let msg = __spreadValues({ id }, commandPayload);
       this.pending.set(id, resolve);
       (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify(msg));
     });
@@ -126,6 +126,30 @@ var Satori = class {
   set(payload) {
     return __async(this, null, function* () {
       const command = "SET";
+      return this.send(__spreadValues({ command }, payload));
+    });
+  }
+  push(payload) {
+    return __async(this, null, function* () {
+      const command = "PUSH";
+      return this.send(__spreadValues({ command }, payload));
+    });
+  }
+  pop(payload) {
+    return __async(this, null, function* () {
+      const command = "POP";
+      return this.send(__spreadValues({ command }, payload));
+    });
+  }
+  splice(payload) {
+    return __async(this, null, function* () {
+      const command = "SPLICE";
+      return this.send(__spreadValues({ command }, payload));
+    });
+  }
+  remove(payload) {
+    return __async(this, null, function* () {
+      const command = "REMOVE";
       return this.send(__spreadValues({ command }, payload));
     });
   }
@@ -170,6 +194,14 @@ var Satori = class {
   getVertex(payload) {
     return __async(this, null, function* () {
       return this.send(__spreadValues({ command: "GET_VERTEX" }, payload));
+    });
+  }
+  /**
+   * Performs a Natural Language Query 
+   */
+  query(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "QUERY" }, payload));
     });
   }
   /**

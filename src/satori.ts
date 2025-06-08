@@ -149,6 +149,40 @@ export interface EncryptPayload {
   encryption_key: string;
 }
 
+export interface PushPayload{
+  key?: string
+  array: string
+  value: any
+  encryption_key?: string,
+  field_array?: FieldCondition[];
+  one?: boolean;
+}
+
+export interface PopPayload{
+  key?: string
+  array: string
+  encryption_key?: string,
+  field_array?: FieldCondition[];
+  one?: boolean;
+}
+
+export interface SplicePayload{
+  key?: string
+  array: string
+  encryption_key?: string,
+  field_array?: FieldCondition[];
+  one?: boolean;
+}
+
+export interface RemovePayload{
+  key?: string
+  array: string
+  value: any
+  encryption_key?: string,
+  field_array?: FieldCondition[];
+  one?: boolean;
+}
+
 /**
  * Payload for DECRYPT operation.
  * @example
@@ -183,6 +217,10 @@ export interface RefPayload {
   key: string;
   ref?: string;
   encryption_key?: string;
+}
+
+export interface QueryPayload{
+  query: string;
 }
 
 interface CommandPayload {
@@ -246,7 +284,8 @@ export class Satori {
   private send(commandPayload: CommandPayload): Promise<any> {
     return new Promise((resolve) => {
       const id = uuidv4();
-      const msg = { id, ...commandPayload };
+      let msg = { id, ...commandPayload };
+      
       this.pending.set(id, resolve);
       this.ws?.send(JSON.stringify(msg));
     });
@@ -259,6 +298,27 @@ export class Satori {
     const command = 'SET';
     return this.send({ command, ...payload });
   }
+  async push(payload: PushPayload) {
+    const command = 'PUSH';
+    return this.send({ command, ...payload });
+  }
+
+  async pop(payload: PopPayload) {
+    const command = 'POP';
+    return this.send({ command, ...payload });
+  }
+
+  async splice(payload: SplicePayload) {
+    const command = 'SPLICE';
+    return this.send({ command, ...payload });
+  }
+
+  async remove(payload: RemovePayload) {
+    const command = 'REMOVE';
+    return this.send({ command, ...payload });
+  }
+
+
 
   /**
    * Performs a GET operation.
@@ -296,6 +356,13 @@ export class Satori {
    */
   async getVertex(payload: GetVertexPayload) {
     return this.send({ command: 'GET_VERTEX', ...payload });
+  }
+
+  /**
+   * Performs a Natural Language Query 
+   */
+  async query(payload: QueryPayload) {
+    return this.send({ command: 'QUERY', ...payload });
   }
 
   /**
