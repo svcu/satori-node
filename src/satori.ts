@@ -431,7 +431,7 @@ export class Satori {
    */
   notify(key: string, callback: (data: any) => void) {
     this.subscriptions.set(key, callback);
-    this.ws?.send(JSON.stringify({ command: 'NOTIFY', key }));
+    this.ws?.send(JSON.stringify({ command: 'NOTIFY', key, id: uuidv4() }));
   }
 
   /**
@@ -442,6 +442,6 @@ export class Satori {
    */
   unnotify(key: string) {
     this.subscriptions.delete(key);
-    this.ws?.send(JSON.stringify({ command: 'UNNOTIFY', key }));
+    this.ws?.send(JSON.stringify({ command: 'UNNOTIFY', key, id: uuidv4() }));
   }
 }

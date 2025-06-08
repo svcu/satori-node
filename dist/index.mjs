@@ -245,7 +245,7 @@ var Satori = class {
   notify(key, callback) {
     var _a;
     this.subscriptions.set(key, callback);
-    (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({ command: "NOTIFY", key }));
+    (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({ command: "NOTIFY", key, id: uuidv4() }));
   }
   /**
    * Unsubscribe from real-time notifications for a key.
@@ -256,7 +256,7 @@ var Satori = class {
   unnotify(key) {
     var _a;
     this.subscriptions.delete(key);
-    (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({ command: "UNNOTIFY", key }));
+    (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({ command: "UNNOTIFY", key, id: uuidv4() }));
   }
 };
 export {
