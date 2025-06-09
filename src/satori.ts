@@ -91,7 +91,7 @@ export interface SetVertexPayload {
   key: string;
   vertex: string | string[];
   relation?: string;
-  encryption_key: string;
+  encryption_key?: string;
 }
 
 /**
@@ -104,7 +104,7 @@ export interface SetVertexPayload {
  */
 export interface GetVertexPayload {
   key: string;
-  encryption_key: string;
+  encryption_key?: string;
   relation?: string;
 }
 
@@ -132,7 +132,7 @@ export interface DeleteVertexPayload {
  */
 export interface DfsPayload {
   node: string;
-  encryption_key: string;
+  encryption_key?: string;
   relation?: string;
 }
 

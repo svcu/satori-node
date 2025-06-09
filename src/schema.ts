@@ -1,24 +1,5 @@
-import { EncryptPayload } from "./models/encrypt";
-import { GetPayload } from "./models/get";
-import { PutPayload } from "./models/put";
-import { SetPayload } from "./models/set";
-import { Socket } from "net";
-import { SetVertexPayload } from "./models/set_vertex";
-import { DeleteVertexPayload } from "./models/delete_vertex";
-import { DFSPayload } from "./models/dfs";
-import { GetAllWithPayload } from "./models/get_all_with";
-import { PutAllWithPayload } from "./models/put_all_with";
-import { Command } from "./models/command";
-import { SetUserPayload } from "./models/set_user";
-import { GetUserPayload } from "./models/get_user";
-import { PutUserPayload } from "./models/put_user";
-import { DeleteUserPayload } from "./models/delete_user";
-import { InjectPayload } from "./models/inject";
-import { GetAllPayload } from "./models/get_all";
-import { v4 as uuidv4 } from "uuid";
-import Satori from "./satori";
-import { FieldEntry, SetRefPayload } from "./models";
-import { Vertex } from "./models/vertex_list";
+import {Satori}from "./satori";
+import { v4 as uuidv4 } from 'uuid';
 
 export default class Schema<T extends object> {
 
@@ -57,16 +38,17 @@ export default class Schema<T extends object> {
     });
   }
 
-  async setVertex(vertex: Vertex[], encryption_key?: string): Promise<boolean> {
+  async setVertex(vertex: string, relation: string, encryption_key?: string): Promise<boolean> {
     return await this.satori.setVertex({
       key: this.key,
       vertex: vertex,
+      relation: relation,
       encryption_key: encryption_key,
     });
   } //relation
 
-  async getVertex(): Promise<any | undefined> {
-    return await this.satori.getVertex({ key: this.key });
+  async getVertex(encryption_key?: string): Promise<any | undefined> {
+    return await this.satori.getVertex({ key: this.key, encryption_key });
   }
 
   async deleteVertex(
@@ -80,14 +62,14 @@ export default class Schema<T extends object> {
     });
   }
 
-  async dfs(relation?: string): Promise<any | undefined> {
-    return this.satori.dfs({ node: this.key, relation: relation });
+  async dfs(relation?: string, encryption_key?: string): Promise<any | undefined> {
+    return this.satori.dfs({ node: this.key, relation: relation, encryption_key });
   }
 
  
 
-  async setRef(ref: string): Promise<Boolean> {
-    return await this.satori.setRef({ key: this.key, ref: ref });
+  async setRef(ref: string, encryption_key?: string): Promise<Boolean> {
+    return await this.satori.setRef({ key: this.key, ref: ref, encryption_key });
   }
 
   async deleteRefs(encryption_key?: string): Promise<Boolean> {
@@ -97,26 +79,26 @@ export default class Schema<T extends object> {
     });
   }
 
-  async getRefs(): Promise<any[] | undefined> {
-    return await this.satori.getRefs({ key: this.key });
+  async getRefs(encryption_key?: string): Promise<any[] | undefined> {
+    return await this.satori.getRefs({ key: this.key, encryption_key });
   }
 
  
 
-  async push(value: any, array: string): Promise<Boolean> {
-    return await this.satori.push({key: this.key, value: value, array: array})
+  async push(value: any, array: string, encryption_key?: string): Promise<Boolean> {
+    return await this.satori.push({key: this.key, value: value, array: array, encryption_key})
   }
 
-  async pop(array: string): Promise<Boolean> {
-    return await this.satori.pop({key: this.key, array: array})
+  async pop(array: string, encryption_key?: string): Promise<Boolean> {
+    return await this.satori.pop({key: this.key, array: array, encryption_key})
   }
 
-  async splice(array: string): Promise<Boolean> {
-    return await this.satori.splice({key: this.key, array: array})
+  async splice(array: string, encryption_key?: string): Promise<Boolean> {
+    return await this.satori.splice({key: this.key, array: array, encryption_key})
   }
 
-  async remove(value: any, array: string): Promise<Boolean> {
-    return await this.satori.remove({key: this.key, value: value, array: array})
+  async remove(value: any, array: string, encryption_key?: string): Promise<Boolean> {
+    return await this.satori.remove({key: this.key, value: value, array: array, encryption_key})
   }
 
   async decrypt(encryption_key: string): Promise<Boolean> {

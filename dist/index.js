@@ -294,6 +294,9 @@ var Satori = class {
     (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({ command: "UNNOTIFY", key, id: (0, import_uuid.v4)(), username: this.username, password: this.password }));
   }
 };
+
+// src/schema.ts
+var import_uuid2 = require("uuid");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   Satori

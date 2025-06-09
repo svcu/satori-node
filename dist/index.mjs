@@ -261,6 +261,9 @@ var Satori = class {
     (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({ command: "UNNOTIFY", key, id: uuidv4(), username: this.username, password: this.password }));
   }
 };
+
+// src/schema.ts
+import { v4 as uuidv42 } from "uuid";
 export {
   Satori
 };
