@@ -284,7 +284,10 @@ export class Satori {
   private send(commandPayload: CommandPayload): Promise<any> {
     return new Promise((resolve) => {
       const id = uuidv4();
-      let msg = { id, ...commandPayload };
+      const username = this.username;
+      const password = this.password;
+
+      let msg = { username, password, id, ...commandPayload };
       
       this.pending.set(id, resolve);
       this.ws?.send(JSON.stringify(msg));
@@ -431,7 +434,7 @@ export class Satori {
    */
   notify(key: string, callback: (data: any) => void) {
     this.subscriptions.set(key, callback);
-    this.ws?.send(JSON.stringify({ command: 'NOTIFY', key, id: uuidv4() }));
+    this.ws?.send(JSON.stringify({ command: 'NOTIFY', key, id: uuidv4(), username: this.username, password: this.password }));
   }
 
   /**
@@ -442,6 +445,6 @@ export class Satori {
    */
   unnotify(key: string) {
     this.subscriptions.delete(key);
-    this.ws?.send(JSON.stringify({ command: 'UNNOTIFY', key, id: uuidv4() }));
+    this.ws?.send(JSON.stringify({ command: 'UNNOTIFY', key, id: uuidv4(), username: this.username, password: this.password }));
   }
 }

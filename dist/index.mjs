@@ -82,7 +82,9 @@ var Satori = class {
     return new Promise((resolve) => {
       var _a;
       const id = uuidv4();
-      let msg = __spreadValues({ id }, commandPayload);
+      const username = this.username;
+      const password = this.password;
+      let msg = __spreadValues({ username, password, id }, commandPayload);
       this.pending.set(id, resolve);
       (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify(msg));
     });
@@ -245,7 +247,7 @@ var Satori = class {
   notify(key, callback) {
     var _a;
     this.subscriptions.set(key, callback);
-    (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({ command: "NOTIFY", key, id: uuidv4() }));
+    (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({ command: "NOTIFY", key, id: uuidv4(), username: this.username, password: this.password }));
   }
   /**
    * Unsubscribe from real-time notifications for a key.
@@ -256,7 +258,7 @@ var Satori = class {
   unnotify(key) {
     var _a;
     this.subscriptions.delete(key);
-    (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({ command: "UNNOTIFY", key, id: uuidv4() }));
+    (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({ command: "UNNOTIFY", key, id: uuidv4(), username: this.username, password: this.password }));
   }
 };
 export {
