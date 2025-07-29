@@ -235,11 +235,39 @@ Fine-tunning of an embedding model with your data.
 await client.train()
 ```
 
+## ✨ Function: `ann()`
+Returns the Aproximate Nearest Neighbors of an object
+
+### 🔷 Payload (`ANNPayload`)
+
+```ts
+{
+  key: string;
+  top_k?: string; //nearest neighbors, defaults to 5
+}
+```
+
+### Response
+
+```ts
+{
+  "results": [
+    {
+      "key": "similar_object_key_1",
+      "score": 0.85
+    },
+    {
+      "key": "similar_object_key_2", 
+      "score": 0.72
+    }
+  ]
+}
+```
+
+
 ## ✨ Function: `ask()`
 
 Performs a natural language question about the database content. This operation is designed to interpret human intentions and generate responses based on stored data. `backend` is set to openai by default, in case of using openai as backend you must have set the env variable `OPENAI_API_KEY`.
-
-### 🔷 Payload (`AskPayload`)
 
 ```js
 await client.ask({
@@ -248,11 +276,24 @@ await client.ask({
 })
 ```
 
+### 🔷 Payload (`AskPayload`)
+
 ```ts
 {
   question: string;
   backend?: string;
 }
+```
+
+
+### Response
+
+
+```ts
+{
+  "response": "Based on the database information, there are 15 users in total. 8 are active developers, 5 are managers, and 2 are interns."
+}
+
 ```
 
 #### Fields:
@@ -287,6 +328,13 @@ Executes an advanced query using natural language or pseudo-SQL to obtain struct
 }
 ```
 
+### Response
+
+```ts
+It can be different depending on the case.
+```
+
+
 #### Fields:
 | Field       | Type     | Required     | Description |
 |-------------|----------|--------------|-------------|
@@ -318,7 +366,7 @@ Executes an advanced query using natural language or pseudo-SQL to obtain struct
 **Response:**
 ```json
 {
-  "answer": "The last transaction was on July 28, 2025 for a value of $300."
+  "response": "The last transaction was on July 28, 2025 for a value of $300."
 }
 ```
 
