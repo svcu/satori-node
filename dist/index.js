@@ -271,6 +271,27 @@ var Satori = class {
     });
   }
   /**
+   * Trains a fine-tunned embedding model for your data.
+   */
+  train() {
+    return __async(this, null, function* () {
+      return this.send({ command: "TRAIN", type: "train" });
+    });
+  }
+  /**
+   * Retrieves a list of Aproximate Nearest Neighbors.
+   */
+  ann(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "ANN" }, payload));
+    });
+  }
+  ask(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "ASK" }, payload));
+    });
+  }
+  /**
    * Subscribe to real-time changes of an object by key.
    * @param key - The key of the object to subscribe to
    * @param callback - Function called with updated data on each change
