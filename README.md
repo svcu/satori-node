@@ -1,4 +1,3 @@
-
 # 📚 Satori Node.js SDK
 
 Welcome to the official documentation for **Satori Node.js SDK**! 🚀  
@@ -42,7 +41,7 @@ await client.connect();
 
 ## 🗃️ CRUD Operations
 
-### Create or Update Data
+### Create Data
 
 ```js
 await client.set({
@@ -164,38 +163,191 @@ It includes useful methods such as:
 
 ---
 
-## 📝 Complete Example
+## 📦 Array and Reference Manipulation Methods
+
+Below are the available methods to manipulate arrays and references in the Satori database using the Node.js client:
+
+### 🔹 push
+Adds a value to an existing array in an object.
+```js
+await client.push({ key: 'user:123', array: 'friends', value: 'user:456' });
+```
+- **key**: Object key.
+- **array**: Name of the array.
+- **value**: Value to add.
+
+### 🔹 pop
+Removes the last element from an array in an object.
+```js
+await client.pop({ key: 'user:123', array: 'friends' });
+```
+- **key**: Object key.
+- **array**: Name of the array.
+
+### 🔹 splice
+Modifies an array in an object (for example, to cut or replace elements).
+```js
+await client.splice({ key: 'user:123', array: 'friends' });
+```
+- **key**: Object key.
+- **array**: Name of the array.
+
+### 🔹 remove
+Removes a specific value from an array in an object.
+```js
+await client.remove({ key: 'user:123', array: 'friends', value: 'user:456' });
+```
+- **key**: Object key.
+- **array**: Name of the array.
+- **value**: Value to remove.
+
+### 🔹 setRef
+Sets a reference to another object.
+```js
+await client.setRef({ key: 'user:123', ref: 'profile:123' });
+```
+- **key**: Source object key.
+- **ref**: Reference object key.
+
+### 🔹 getRefs
+Retrieves all references for an object.
+```js
+await client.getRefs({ key: 'user:123' });
+```
+- **key**: Object key.
+
+### 🔹 deleteRef
+Deletes a specific reference from an object.
+```js
+await client.deleteRef({ key: 'user:123', ref: 'profile:123' });
+```
+- **key**: Source object key.
+- **ref**: Reference object key to delete.
+
+---
+
+
+##  📘 Function Documentation: `ask()` and `query()` – Satori SDK
+
+## ✨ Function: `train()`
+Fine-tunning of an embedding model with your data.
+```js
+await client.train()
+```
+
+## ✨ Function: `ask()`
+
+Performs a natural language question about the database content. This operation is designed to interpret human intentions and generate responses based on stored data. `backend` is set to openai by default, in case of using openai as backend you must have set the env variable `OPENAI_API_KEY`.
+
+### 🔷 Payload (`AskPayload`)
 
 ```js
-const client = new Satori({ username, password, host });
-await client.connect();
+await client.ask({
+  question: "How many users do we have"
+  backend: "openai"
+})
+```
 
-await client.set({
-  key: 'user:1',
-  data: { name: 'Carlos', age: 30 },
-  type: 'user'
-});
+```ts
+{
+  question: string;
+  backend?: string;
+}
+```
 
-client.notify('user:1', data => {
-  console.log('Real-time update:', data);
-});
+#### Fields:
+| Field       | Type     | Required     | Description |
+|-------------|----------|--------------|-------------|
+| `question`  | `string` | ✅ Yes        | Natural language question that will be interpreted to answer based on stored data. |
+| `backend`   | `string` | ❌ Optional   | Name of the backend to use for answering the question (e.g., `"openai:gpt-4"` or `"ollama:llama3:8b"`). If omitted defaults to, `openai:gpt-4o-mini`
+
+### 🧠 Operation
+- Does not require specific keys or predefined structures.
+- Interprets the intention of the question and responds with clear wording.
+- Can be used, for example, for:
+  - `"What was the last sale made?"`
+  - `"How many users registered in June?"`
+  - `"What products are most popular in Colombia?"`
+
+### ⚠️ Rules
+- Fields `key`, `field_array`, and `value` should not be included.
+- Can use trained models (`train()`) or semantic/vector search.
+
+---
+
+## ✨ Function: `query()`
+
+Executes an advanced query using natural language or pseudo-SQL to obtain structured data from the database.
+
+### 🔷 Payload (`QueryPayload`)
+```ts
+{
+  query: string;
+  backend?: string;
+}
+```
+
+#### Fields:
+| Field       | Type     | Required     | Description |
+|-------------|----------|--------------|-------------|
+| `query`     | `string` | ✅ Yes        | Query in natural language or SQL-like format to retrieve specific data. |
+| `backend`   | `string` | ❌ Optional   | Execution backend (e.g., `"openai:gpt-4"` or `"ollama:llama3:8b"`). If omitted defaults to, `openai:gpt-4o-mini` |
+
+### 🧠 Operation
+- Returns **structured data**, such as objects, arrays, or tables. Make operations with natural language
+- Accepts filters, conditions, and aggregations. Examples:
+  - `"Give me all users who registered after January 1, 2024"`
+  - `"Tell me how many orders have status 'pending'"`
+  - `"Insert a new order with price $30"`
+
+### ⚠️ Rules
+- The query must have enough context to infer the necessary fields.
+
+
+---
+
+## 🧪 Examples
+
+### `ask()` example
+```json
+{
+  "question": "What was the last transaction made?"
+}
+```
+
+**Response:**
+```json
+{
+  "answer": "The last transaction was on July 28, 2025 for a value of $300."
+}
 ```
 
 ---
 
-## 🧠 Key Concepts
+### `query()` example
+```json
+{
+  "query": "Give me all users registered after June 2024"
+}
 
-- **key**: Unique identifier of the object.
-- **type**: Object type (e.g., 'user').
-- **field_array**: Advanced filters for bulk operations.
-- **notifications**: Subscription to real-time changes.
-- **vertices**: Graph-like relationships between objects.
+{
+  "query": "Create an object with name jhon and email example@example.com"
+}
+```
+
+**Response:**
+```json
+[
+  { "user_id": "abc123", "name": "María", "signup_date": "2024-07-01" },
+  { "user_id": "def456", "name": "Luis", "signup_date": "2024-08-03" }
+]
+```
 
 ---
 
-## 💬 Questions or Suggestions?
+## 📌 Additional notes
 
-Feel free to open an issue or contribute!  
-With ❤️ from the Satori team.
+- Both functions can benefit from the previous `train()` command to improve their contextual understanding.
+- It is recommended to use `ask()` for questions that involve reasoning (a conversation) and `query()` for queries like inserting an object, modifying it, etc...
 
 ---

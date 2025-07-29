@@ -219,13 +219,24 @@ export interface RefPayload {
   encryption_key?: string;
 }
 
+export interface AskPayload{
+  question: string;
+  backend?: string
+}
+
 export interface QueryPayload{
   query: string;
+  backend?: string
 }
 
 interface CommandPayload {
   command: string;
   [key: string]: any;
+}
+
+interface ANNPayload{
+  key: string;
+  top_k?: number;
 }
 
 /**
@@ -424,6 +435,25 @@ export class Satori {
   async deleteRef(payload: RefPayload) {
     return this.send({ command: 'DELETE_REF', ...payload });
   }
+
+  /**
+   * Trains a fine-tunned embedding model for your data.
+   */
+  async train() {
+    return this.send({ command: 'TRAIN', type: 'train'});
+  }
+
+  /**
+   * Retrieves a list of Aproximate Nearest Neighbors.
+   */
+  async ann(payload: ANNPayload) {
+    return this.send({ command: 'ANN', ...payload});
+  }
+
+  async ask(payload: AskPayload) {
+    return this.send({ command: 'ASK', ...payload});
+  }
+
 
   /**
    * Subscribe to real-time changes of an object by key.
