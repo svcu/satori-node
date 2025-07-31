@@ -268,7 +268,7 @@ All responses obbey the following pattern:
 {
   data: any //the requested data if any
   message: string //status message
-  status: string //SUCCESS || ERROR
+  type: string //SUCCESS || ERROR
 }
 ```
 
@@ -285,6 +285,13 @@ AI responses obbey a different patern:
 {
   result: string //response from the operation made in the db
   status: string //status
+}
+```
+
+## ann
+```ts
+{
+  results: array //response from the operation made in the db
 }
 ```
 
