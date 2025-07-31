@@ -227,175 +227,79 @@ await client.deleteRef({ key: 'user:123', ref: 'profile:123' });
 ---
 
 
-##  📘 Function Documentation: `ask()` and `query()` – Satori SDK
+## 🤖 AI Methods
+Satori has AI features integrated that boost developers productivity. By example you can train an embedding model with your data and use it wherever you want to. 
+You can train your embedding model manually whenever you want to but Satori will automatically fine-tune your model with any new updates and use this updated model for all emebedding operations.
 
-## ✨ Function: `train()`
-Fine-tunning of an embedding model with your data.
-```js
-await client.train()
+### 🔹 train
+Train an embedding model with your data. The model will be at the root of your db in the `satori_semantic_model` folder
+```python
+await client.train();
 ```
 
-## ✨ Function: `ann()`
-Returns the Aproximate Nearest Neighbors of an object
+### 🔹 ann
+Perform an Aproximate Nearest Neighbors search
+```python
+await client.ann({'key' : 'user:123', 'top_k' : '5'});
+```
+- **key**: Source object key.
+- **top_k**: Number of nearest neighbors to return
 
-### 🔷 Payload (`ANNPayload`)
+### 🔹 query
+Make querys in natural language
+```python
+await client.query({'query' : 'Insert the value 5 into the grades array of user:123', 'backend' : 'openai:gpt-4o-mini'|);
+```
+- **query**: Your query in natural language.
+- **ref**: The LLM backend. Must be `openai:model-name` or `ollama:model-name`, if not specified `openai:gpt-4o-mini` will be used as default. If you're using OpenAI as your backend you must specify the `OPENAI_API_KEY` env variable.
+
+### 🔹 ask
+Ask question about your data in natural language
+```python
+await client.ask({'question' : 'How many user over 25 years old do we have. Just return the number.', 'backend' : 'openai:gpt-4o-mini'});
+```
+- **question**: Your question in natural language.
+- **ref**: The LLM backend. Must be `openai:model-name` or `ollama:model-name`, if not specified `openai:gpt-4o-mini` will be used as default. If you're using OpenAI as your backend you must specify the `OPENAI_API_KEY` env variable.
+
+## Responses
+All responses obbey the following pattern:
 
 ```ts
 {
-  key: string;
-  top_k?: string; //nearest neighbors, defaults to 5
+  data: any //the requested data if any
+  message: string //status message
+  status: string //SUCCESS || ERROR
 }
 ```
 
-### Response
-
+AI responses obbey a different patern:
+## ask
 ```ts
 {
-  "results": [
-    {
-      "key": "similar_object_key_1",
-      "score": 0.85
-    },
-    {
-      "key": "similar_object_key_2", 
-      "score": 0.72
-    }
-  ]
+  response: string //response to the question
 }
 ```
 
-
-## ✨ Function: `ask()`
-
-Performs a natural language question about the database content. This operation is designed to interpret human intentions and generate responses based on stored data. `backend` is set to openai by default, in case of using openai as backend you must have set the env variable `OPENAI_API_KEY`.
-
-```js
-await client.ask({
-  question: "How many users do we have"
-  backend: "openai"
-})
-```
-
-### 🔷 Payload (`AskPayload`)
-
+## query
 ```ts
 {
-  question: string;
-  backend?: string;
+  result: string //response from the operation made in the db
+  status: string //status
 }
 ```
 
+## 🧠 Key Concepts
 
-### Response
-
-
-```ts
-{
-  "response": "Based on the database information, there are 15 users in total. 8 are active developers, 5 are managers, and 2 are interns."
-}
-
-```
-
-#### Fields:
-| Field       | Type     | Required     | Description |
-|-------------|----------|--------------|-------------|
-| `question`  | `string` | ✅ Yes        | Natural language question that will be interpreted to answer based on stored data. |
-| `backend`   | `string` | ❌ Optional   | Name of the backend to use for answering the question (e.g., `"openai:gpt-4"` or `"ollama:llama3:8b"`). If omitted defaults to, `openai:gpt-4o-mini`
-
-### 🧠 Operation
-- Does not require specific keys or predefined structures.
-- Interprets the intention of the question and responds with clear wording.
-- Can be used, for example, for:
-  - `"What was the last sale made?"`
-  - `"How many users registered in June?"`
-  - `"What products are most popular in Colombia?"`
-
-### ⚠️ Rules
-- Fields `key`, `field_array`, and `value` should not be included.
-- Can use trained models (`train()`) or semantic/vector search.
-
----
-
-## ✨ Function: `query()`
-
-Executes an advanced query using natural language or pseudo-SQL to obtain structured data from the database.
-
-### 🔷 Payload (`QueryPayload`)
-```ts
-{
-  query: string;
-  backend?: string;
-}
-```
-
-### Response
-
-```ts
-It can be different depending on the case.
-```
+- **key**: Unique identifier of the object.
+- **type**: Object type (e.g., 'user').
+- **field_array**: Advanced filters for bulk operations.
+- **notifications**: Subscription to real-time changes.
+- **vertices**: Graph-like relationships between objects.
 
 
-#### Fields:
-| Field       | Type     | Required     | Description |
-|-------------|----------|--------------|-------------|
-| `query`     | `string` | ✅ Yes        | Query in natural language or SQL-like format to retrieve specific data. |
-| `backend`   | `string` | ❌ Optional   | Execution backend (e.g., `"openai:gpt-4"` or `"ollama:llama3:8b"`). If omitted defaults to, `openai:gpt-4o-mini` |
+## 💬 Questions or Suggestions?
 
-### 🧠 Operation
-- Returns **structured data**, such as objects, arrays, or tables. Make operations with natural language
-- Accepts filters, conditions, and aggregations. Examples:
-  - `"Give me all users who registered after January 1, 2024"`
-  - `"Tell me how many orders have status 'pending'"`
-  - `"Insert a new order with price $30"`
-
-### ⚠️ Rules
-- The query must have enough context to infer the necessary fields.
-
-
----
-
-## 🧪 Examples
-
-### `ask()` example
-```json
-{
-  "question": "What was the last transaction made?"
-}
-```
-
-**Response:**
-```json
-{
-  "response": "The last transaction was on July 28, 2025 for a value of $300."
-}
-```
-
----
-
-### `query()` example
-```json
-{
-  "query": "Give me all users registered after June 2024"
-}
-
-{
-  "query": "Create an object with name jhon and email example@example.com"
-}
-```
-
-**Response:**
-```json
-[
-  { "user_id": "abc123", "name": "María", "signup_date": "2024-07-01" },
-  { "user_id": "def456", "name": "Luis", "signup_date": "2024-08-03" }
-]
-```
-
----
-
-## 📌 Additional notes
-
-- Both functions can benefit from the previous `train()` command to improve their contextual understanding.
-- It is recommended to use `ask()` for questions that involve reasoning (a conversation) and `query()` for queries like inserting an object, modifying it, etc...
+Feel free to open an issue or contribute!
+With ❤️ from the Satori team.
 
 ---
