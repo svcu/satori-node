@@ -1,6 +1,6 @@
 # 📚 Satori Node.js SDK
 
-Welcome to the official documentation for **Satori Node.js SDK**! 🚀  
+Welcome to the official documentation for **Satori Node.js SDK**\! 🚀\
 This library allows you to interact easily and efficiently with the Satori database via WebSockets, supporting CRUD operations, real-time notifications, and advanced queries.
 
 ---
@@ -31,10 +31,18 @@ import { Satori } from 'satori-node';
 const client = new Satori({
   username: 'user',
   password: 'password',
-  host: 'ws://localhost:8000'
+  host: 'ws://localhost:2310'
 });
 
 await client.connect();
+
+```
+
+## Running
+If you wish you can start and update satori programatically by using
+```js
+await client.run();
+await client.update();
 ```
 
 ---
@@ -94,7 +102,7 @@ await client.get({
 
 ## 🔔 Real-time Notifications
 
-Receive automatic updates when an object changes!
+Receive automatic updates when an object changes\!
 
 ```js
 client.notify('user:123', data => {
@@ -158,6 +166,7 @@ await user.set();
 ```
 
 It includes useful methods such as:
+
 - `set`, `delete`, `encrypt`, `setVertex`, `getVertex`, `deleteVertex`, `dfs`
 - Array methods: `push`, `pop`, `splice`, `remove`
 
@@ -168,100 +177,133 @@ It includes useful methods such as:
 Below are the available methods to manipulate arrays and references in the Satori database using the Node.js client:
 
 ### 🔹 push
+
 Adds a value to an existing array in an object.
+
 ```js
 await client.push({ key: 'user:123', array: 'friends', value: 'user:456' });
 ```
+
 - **key**: Object key.
 - **array**: Name of the array.
 - **value**: Value to add.
 
 ### 🔹 pop
+
 Removes the last element from an array in an object.
+
 ```js
 await client.pop({ key: 'user:123', array: 'friends' });
 ```
+
 - **key**: Object key.
 - **array**: Name of the array.
 
 ### 🔹 splice
+
 Modifies an array in an object (for example, to cut or replace elements).
+
 ```js
 await client.splice({ key: 'user:123', array: 'friends' });
 ```
+
 - **key**: Object key.
 - **array**: Name of the array.
 
 ### 🔹 remove
+
 Removes a specific value from an array in an object.
+
 ```js
 await client.remove({ key: 'user:123', array: 'friends', value: 'user:456' });
 ```
+
 - **key**: Object key.
 - **array**: Name of the array.
 - **value**: Value to remove.
 
 ### 🔹 setRef
+
 Sets a reference to another object.
+
 ```js
 await client.setRef({ key: 'user:123', ref: 'profile:123' });
 ```
+
 - **key**: Source object key.
 - **ref**: Reference object key.
 
 ### 🔹 getRefs
+
 Retrieves all references for an object.
+
 ```js
 await client.getRefs({ key: 'user:123' });
 ```
+
 - **key**: Object key.
 
 ### 🔹 deleteRef
+
 Deletes a specific reference from an object.
+
 ```js
 await client.deleteRef({ key: 'user:123', ref: 'profile:123' });
 ```
+
 - **key**: Source object key.
 - **ref**: Reference object key to delete.
 
 ---
 
-
 ## 🤖 AI Methods
-Satori has AI features integrated that boost developers productivity. By example you can train an embedding model with your data and use it wherever you want to. 
+
+Satori has AI features integrated that boost developers productivity. By example you can train an embedding model with your data and use it wherever you want to.
 You can train your embedding model manually whenever you want to but Satori will automatically fine-tune your model with any new updates and use this updated model for all emebedding operations.
 
 ### 🔹 train
+
 Train an embedding model with your data. The model will be at the root of your db in the `satori_semantic_model` folder
+
 ```python
 await client.train();
 ```
 
 ### 🔹 ann
+
 Perform an Aproximate Nearest Neighbors search
+
 ```python
 await client.ann({'key' : 'user:123', 'top_k' : '5'});
 ```
+
 - **key**: Source object key.
 - **top_k**: Number of nearest neighbors to return
 
 ### 🔹 query
+
 Make querys in natural language
+
 ```python
 await client.query({'query' : 'Insert the value 5 into the grades array of user:123', 'backend' : 'openai:gpt-4o-mini'|);
 ```
+
 - **query**: Your query in natural language.
 - **ref**: The LLM backend. Must be `openai:model-name` or `ollama:model-name`, if not specified `openai:gpt-4o-mini` will be used as default. If you're using OpenAI as your backend you must specify the `OPENAI_API_KEY` env variable.
 
 ### 🔹 ask
+
 Ask question about your data in natural language
+
 ```python
 await client.ask({'question' : 'How many user over 25 years old do we have. Just return the number.', 'backend' : 'openai:gpt-4o-mini'});
 ```
+
 - **question**: Your question in natural language.
 - **ref**: The LLM backend. Must be `openai:model-name` or `ollama:model-name`, if not specified `openai:gpt-4o-mini` will be used as default. If you're using OpenAI as your backend you must specify the `OPENAI_API_KEY` env variable.
 
 ## Responses
+
 All responses obbey the following pattern:
 
 ```ts
@@ -273,7 +315,9 @@ All responses obbey the following pattern:
 ```
 
 AI responses obbey a different patern:
+
 ## ask
+
 ```ts
 {
   response: string //response to the question
@@ -281,6 +325,7 @@ AI responses obbey a different patern:
 ```
 
 ## query
+
 ```ts
 {
   result: string //response from the operation made in the db
@@ -289,6 +334,7 @@ AI responses obbey a different patern:
 ```
 
 ## ann
+
 ```ts
 {
   results: array //response from the operation made in the db
@@ -303,10 +349,9 @@ AI responses obbey a different patern:
 - **notifications**: Subscription to real-time changes.
 - **vertices**: Graph-like relationships between objects.
 
-
 ## 💬 Questions or Suggestions?
 
-Feel free to open an issue or contribute!
+Feel free to open an issue or contribute\!
 With ❤️ from the Satori team.
 
 ---
