@@ -279,7 +279,7 @@ export class Satori {
   }
 
   update(){
-    spawnSync('satori update')
+    spawnSync('satoridb update')
   }
 
   async connect(): Promise<void> {
