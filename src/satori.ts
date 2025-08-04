@@ -1,6 +1,7 @@
 // satori.ts
 import WebSocket from 'ws';
 import { v4 as uuidv4 } from 'uuid';
+import { spawn, spawnSync } from 'child_process';
 
 /**
  * Represents a field-value condition for filtering operations.
@@ -265,6 +266,22 @@ export class Satori {
   /**
    * Connects to the WebSocket server.
    */
+ 
+  run(){
+    if(this.username && this.password){
+      let port = this.host.split(':')[2]
+      spawnSync('satori', ['-a', this.username, this.password, '-h', "-port", port])
+    }
+    else{
+      let port = this.host.split(':')[2]
+      spawnSync('satori', ["-h",'-port', port])
+    }
+  }
+
+  update(){
+    spawnSync('satori update')
+  }
+
   async connect(): Promise<void> {
     this.ws = new WebSocket(this.host);
 
