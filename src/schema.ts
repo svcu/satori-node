@@ -68,21 +68,7 @@ export default class Schema<T extends object> {
 
  
 
-  async setRef(ref: string, encryption_key?: string): Promise<Boolean> {
-    return await this.satori.setRef({ key: this.key, ref: ref, encryption_key });
-  }
-
-  async deleteRefs(encryption_key?: string): Promise<Boolean> {
-    return await this.satori.deleteRefs({
-      key: this.key,
-      encryption_key: encryption_key,
-    });
-  }
-
-  async getRefs(encryption_key?: string): Promise<any[] | undefined> {
-    return await this.satori.getRefs({ key: this.key, encryption_key });
-  }
-
+ 
  
 
   async push(value: any, array: string, encryption_key?: string): Promise<Boolean> {

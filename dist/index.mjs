@@ -38,6 +38,7 @@ var __async = (__this, __arguments, generator) => {
 // src/satori.ts
 import WebSocket from "ws";
 import { v4 as uuidv4 } from "uuid";
+import { spawnSync } from "child_process";
 var Satori = class {
   /**
    * Creates an instance of Satori.
@@ -53,6 +54,18 @@ var Satori = class {
   /**
    * Connects to the WebSocket server.
    */
+  run() {
+    if (this.username && this.password) {
+      let port = this.host.split(":")[2];
+      spawnSync("satori", ["-a", this.username, this.password, "-h", "-port", port]);
+    } else {
+      let port = this.host.split(":")[2];
+      spawnSync("satori", ["-h", "-port", port]);
+    }
+  }
+  update() {
+    spawnSync("satoridb update");
+  }
   connect() {
     return __async(this, null, function* () {
       this.ws = new WebSocket(this.host);
@@ -206,38 +219,6 @@ var Satori = class {
     });
   }
   /**
-   * Sets a reference to another object.
-   */
-  setRef(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "SET_REF" }, payload));
-    });
-  }
-  /**
-   * Retrieves all references for a key.
-   */
-  getRefs(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "GET_REFS" }, payload));
-    });
-  }
-  /**
-   * Deletes all references for a key.
-   */
-  deleteRefs(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "DELETE_REFS" }, payload));
-    });
-  }
-  /**
-   * Deletes a specific reference.
-   */
-  deleteRef(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "DELETE_REF" }, payload));
-    });
-  }
-  /**
    * Trains a fine-tunned embedding model for your data.
    */
   train() {
@@ -276,11 +257,6 @@ var Satori = class {
    * @example
    * client.unnotify('user:123');
    */
-  unnotify(key) {
-    var _a;
-    this.subscriptions.delete(key);
-    (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({ command: "UNNOTIFY", key, id: uuidv4(), username: this.username, password: this.password }));
-  }
 };
 
 // src/schema.ts
