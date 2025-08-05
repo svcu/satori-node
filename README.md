@@ -231,7 +231,7 @@ You can train your embedding model manually whenever you want to but Satori will
 
 ### 🔹 train
 
-Train an embedding model with your data. The model will be at the root of your db in the `satori_semantic_model` folder
+Train an embedding model with your data. The model is accessible on `localhost:5000/model` The model will be at the root of your db in the `satori_semantic_model` folder.
 
 ```python
 await client.train();
