@@ -426,34 +426,6 @@ export class Satori {
 
 
   /**
-   * Sets a reference to another object.
-   */
-  async setRef(payload: RefPayload) {
-    return this.send({ command: 'SET_REF', ...payload });
-  }
-
-  /**
-   * Retrieves all references for a key.
-   */
-  async getRefs(payload: RefPayload) {
-    return this.send({ command: 'GET_REFS', ...payload });
-  }
-
-  /**
-   * Deletes all references for a key.
-   */
-  async deleteRefs(payload: RefPayload) {
-    return this.send({ command: 'DELETE_REFS', ...payload });
-  }
-
-  /**
-   * Deletes a specific reference.
-   */
-  async deleteRef(payload: RefPayload) {
-    return this.send({ command: 'DELETE_REF', ...payload });
-  }
-
-  /**
    * Trains a fine-tunned embedding model for your data.
    */
   async train() {
@@ -490,8 +462,5 @@ export class Satori {
    * @example
    * client.unnotify('user:123');
    */
-  unnotify(key: string) {
-    this.subscriptions.delete(key);
-    this.ws?.send(JSON.stringify({ command: 'UNNOTIFY', key, id: uuidv4(), username: this.username, password: this.password }));
-  }
+
 }
