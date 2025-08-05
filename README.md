@@ -172,9 +172,9 @@ It includes useful methods such as:
 
 ---
 
-## 📦 Array and Reference Manipulation Methods
+## 📦 Array Manipulation Methods
 
-Below are the available methods to manipulate arrays and references in the Satori database using the Node.js client:
+Below are the available methods to manipulate arrays in the Satori database using the Node.js client:
 
 ### 🔹 push
 
@@ -221,38 +221,6 @@ await client.remove({ key: 'user:123', array: 'friends', value: 'user:456' });
 - **key**: Object key.
 - **array**: Name of the array.
 - **value**: Value to remove.
-
-### 🔹 setRef
-
-Sets a reference to another object.
-
-```js
-await client.setRef({ key: 'user:123', ref: 'profile:123' });
-```
-
-- **key**: Source object key.
-- **ref**: Reference object key.
-
-### 🔹 getRefs
-
-Retrieves all references for an object.
-
-```js
-await client.getRefs({ key: 'user:123' });
-```
-
-- **key**: Object key.
-
-### 🔹 deleteRef
-
-Deletes a specific reference from an object.
-
-```js
-await client.deleteRef({ key: 'user:123', ref: 'profile:123' });
-```
-
-- **key**: Source object key.
-- **ref**: Reference object key to delete.
 
 ---
 
