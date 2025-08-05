@@ -103,11 +103,6 @@ client.notify('user:123', data => {
 });
 ```
 
-To stop receiving notifications:
-
-```js
-client.unnotify('user:123');
-```
 
 ---
 
