@@ -267,69 +267,6 @@ export class Satori {
    * Connects to the WebSocket server.
    */
  
-  async run(){
-    try {
-      let port = this.host.split(':')[2] || '8000';
-      
-      console.log('Iniciando Satori en segundo plano...');
-      
-      if(this.username && this.password){
-        const satoriProcess = spawn('satori', ['-a', this.username, this.password, '-h', "-port", port], {
-          stdio: 'ignore', // Ignorar la salida para que no se bloquee
-          shell: true,
-          detached: true,
-          windowsHide: true // Ocultar la ventana en Windows
-        });
-        
-        // Desconectar el proceso hijo del proceso padre
-        satoriProcess.unref();
-        
-      } else {
-        const satoriProcess = spawn('satori', ["-h",'-port', port], {
-          stdio: 'ignore', // Ignorar la salida para que no se bloquee
-          shell: true,
-          detached: true,
-          windowsHide: true // Ocultar la ventana en Windows
-        });
-        
-        // Desconectar el proceso hijo del proceso padre
-        satoriProcess.unref();
-      }
-      
-      // Wait a bit for the server to start
-      console.log('Esperando 3 segundos para que el servidor inicie...');
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      console.log('Satori iniciado correctamente en segundo plano');
-      
-    } catch (error) {
-      console.error('Failed to start Satori:', error);
-      throw error;
-    }
-  }
-
-  async update(){
-    try {
-      const result = spawnSync('satoridb', ['update'], {
-        stdio: 'inherit',
-        shell: true
-      });
-      
-      if (result.error) {
-        console.error('Error updating Satori:', result.error);
-        throw result.error;
-      }
-      
-      if (result.status !== 0) {
-        console.error('Satori update failed with code:', result.status);
-        throw new Error(`Satori update failed with code: ${result.status}`);
-      }
-      
-      console.log('Satori updated successfully');
-    } catch (error) {
-      console.error('Failed to update Satori:', error);
-      throw error;
-    }
-  }
 
   async connect(): Promise<void> {
     this.ws = new WebSocket(this.host);

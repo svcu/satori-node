@@ -71,7 +71,6 @@ module.exports = __toCommonJS(src_exports);
 // src/satori.ts
 var import_ws = __toESM(require("ws"));
 var import_uuid = require("uuid");
-var import_child_process = require("child_process");
 var Satori = class {
   /**
    * Creates an instance of Satori.
@@ -87,63 +86,6 @@ var Satori = class {
   /**
    * Connects to the WebSocket server.
    */
-  run() {
-    return __async(this, null, function* () {
-      try {
-        let port = this.host.split(":")[2] || "8000";
-        console.log("Iniciando Satori en segundo plano...");
-        if (this.username && this.password) {
-          const satoriProcess = (0, import_child_process.spawn)("satori", ["-a", this.username, this.password, "-h", "-port", port], {
-            stdio: "ignore",
-            // Ignorar la salida para que no se bloquee
-            shell: true,
-            detached: true,
-            windowsHide: true
-            // Ocultar la ventana en Windows
-          });
-          satoriProcess.unref();
-        } else {
-          const satoriProcess = (0, import_child_process.spawn)("satori", ["-h", "-port", port], {
-            stdio: "ignore",
-            // Ignorar la salida para que no se bloquee
-            shell: true,
-            detached: true,
-            windowsHide: true
-            // Ocultar la ventana en Windows
-          });
-          satoriProcess.unref();
-        }
-        console.log("Esperando 3 segundos para que el servidor inicie...");
-        yield new Promise((resolve) => setTimeout(resolve, 3e3));
-        console.log("Satori iniciado correctamente en segundo plano");
-      } catch (error) {
-        console.error("Failed to start Satori:", error);
-        throw error;
-      }
-    });
-  }
-  update() {
-    return __async(this, null, function* () {
-      try {
-        const result = (0, import_child_process.spawnSync)("satoridb", ["update"], {
-          stdio: "inherit",
-          shell: true
-        });
-        if (result.error) {
-          console.error("Error updating Satori:", result.error);
-          throw result.error;
-        }
-        if (result.status !== 0) {
-          console.error("Satori update failed with code:", result.status);
-          throw new Error(`Satori update failed with code: ${result.status}`);
-        }
-        console.log("Satori updated successfully");
-      } catch (error) {
-        console.error("Failed to update Satori:", error);
-        throw error;
-      }
-    });
-  }
   connect() {
     return __async(this, null, function* () {
       this.ws = new import_ws.default(this.host);
