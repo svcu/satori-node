@@ -89,36 +89,50 @@ var Satori = class {
    */
   run() {
     return __async(this, null, function* () {
+      var _a, _b, _c, _d;
       try {
         let port = this.host.split(":")[2] || "8000";
+        console.log("Iniciando Satori en segundo plano...");
         if (this.username && this.password) {
-          const result = (0, import_child_process.spawnSync)("satori", ["-a", this.username, this.password, "-h", "-port", port], {
-            stdio: "inherit",
-            shell: true
+          const satoriProcess = (0, import_child_process.spawn)("satori", ["-a", this.username, this.password, "-h", "-port", port], {
+            stdio: "pipe",
+            shell: true,
+            detached: true
           });
-          if (result.error) {
-            console.error("Error starting Satori:", result.error);
-            throw result.error;
-          }
-          if (result.status !== 0) {
-            console.error("Satori process exited with code:", result.status);
-            throw new Error(`Satori process exited with code: ${result.status}`);
-          }
+          satoriProcess.on("error", (error) => {
+            console.error("Error starting Satori:", error);
+          });
+          (_a = satoriProcess.stdout) == null ? void 0 : _a.on("data", (data) => {
+            console.log("Satori stdout:", data.toString());
+          });
+          (_b = satoriProcess.stderr) == null ? void 0 : _b.on("data", (data) => {
+            console.log("Satori stderr:", data.toString());
+          });
+          satoriProcess.on("close", (code) => {
+            console.log(`Satori process exited with code: ${code}`);
+          });
         } else {
-          const result = (0, import_child_process.spawnSync)("satori", ["-h", "-port", port], {
-            stdio: "inherit",
-            shell: true
+          const satoriProcess = (0, import_child_process.spawn)("satori", ["-h", "-port", port], {
+            stdio: "pipe",
+            shell: true,
+            detached: true
           });
-          if (result.error) {
-            console.error("Error starting Satori:", result.error);
-            throw result.error;
-          }
-          if (result.status !== 0) {
-            console.error("Satori process exited with code:", result.status);
-            throw new Error(`Satori process exited with code: ${result.status}`);
-          }
+          satoriProcess.on("error", (error) => {
+            console.error("Error starting Satori:", error);
+          });
+          (_c = satoriProcess.stdout) == null ? void 0 : _c.on("data", (data) => {
+            console.log("Satori stdout:", data.toString());
+          });
+          (_d = satoriProcess.stderr) == null ? void 0 : _d.on("data", (data) => {
+            console.log("Satori stderr:", data.toString());
+          });
+          satoriProcess.on("close", (code) => {
+            console.log(`Satori process exited with code: ${code}`);
+          });
         }
-        yield new Promise((resolve) => setTimeout(resolve, 2e3));
+        console.log("Esperando 3 segundos para que el servidor inicie...");
+        yield new Promise((resolve) => setTimeout(resolve, 3e3));
+        console.log("Satori iniciado correctamente en segundo plano");
       } catch (error) {
         console.error("Failed to start Satori:", error);
         throw error;
