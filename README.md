@@ -38,13 +38,6 @@ await client.connect();
 
 ```
 
-## Running
-If you wish you can start and update satori programatically by using
-```js
-await client.run();
-await client.update();
-```
-
 ---
 
 ## 🗃️ CRUD Operations
