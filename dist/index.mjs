@@ -56,46 +56,29 @@ var Satori = class {
    */
   run() {
     return __async(this, null, function* () {
-      var _a, _b, _c, _d;
       try {
         let port = this.host.split(":")[2] || "8000";
         console.log("Iniciando Satori en segundo plano...");
         if (this.username && this.password) {
           const satoriProcess = spawn("satori", ["-a", this.username, this.password, "-h", "-port", port], {
-            stdio: "pipe",
+            stdio: "ignore",
+            // Ignorar la salida para que no se bloquee
             shell: true,
-            detached: true
+            detached: true,
+            windowsHide: true
+            // Ocultar la ventana en Windows
           });
-          satoriProcess.on("error", (error) => {
-            console.error("Error starting Satori:", error);
-          });
-          (_a = satoriProcess.stdout) == null ? void 0 : _a.on("data", (data) => {
-            console.log("Satori stdout:", data.toString());
-          });
-          (_b = satoriProcess.stderr) == null ? void 0 : _b.on("data", (data) => {
-            console.log("Satori stderr:", data.toString());
-          });
-          satoriProcess.on("close", (code) => {
-            console.log(`Satori process exited with code: ${code}`);
-          });
+          satoriProcess.unref();
         } else {
           const satoriProcess = spawn("satori", ["-h", "-port", port], {
-            stdio: "pipe",
+            stdio: "ignore",
+            // Ignorar la salida para que no se bloquee
             shell: true,
-            detached: true
+            detached: true,
+            windowsHide: true
+            // Ocultar la ventana en Windows
           });
-          satoriProcess.on("error", (error) => {
-            console.error("Error starting Satori:", error);
-          });
-          (_c = satoriProcess.stdout) == null ? void 0 : _c.on("data", (data) => {
-            console.log("Satori stdout:", data.toString());
-          });
-          (_d = satoriProcess.stderr) == null ? void 0 : _d.on("data", (data) => {
-            console.log("Satori stderr:", data.toString());
-          });
-          satoriProcess.on("close", (code) => {
-            console.log(`Satori process exited with code: ${code}`);
-          });
+          satoriProcess.unref();
         }
         console.log("Esperando 3 segundos para que el servidor inicie...");
         yield new Promise((resolve) => setTimeout(resolve, 3e3));

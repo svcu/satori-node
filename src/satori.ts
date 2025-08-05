@@ -275,55 +275,25 @@ export class Satori {
       
       if(this.username && this.password){
         const satoriProcess = spawn('satori', ['-a', this.username, this.password, '-h', "-port", port], {
-          stdio: 'pipe',
+          stdio: 'ignore', // Ignorar la salida para que no se bloquee
           shell: true,
-          detached: true
+          detached: true,
+          windowsHide: true // Ocultar la ventana en Windows
         });
         
-        // Manejar errores del proceso
-        satoriProcess.on('error', (error) => {
-          console.error('Error starting Satori:', error);
-        });
-        
-        // Manejar la salida del proceso
-        satoriProcess.stdout?.on('data', (data) => {
-          console.log('Satori stdout:', data.toString());
-        });
-        
-        satoriProcess.stderr?.on('data', (data) => {
-          console.log('Satori stderr:', data.toString());
-        });
-        
-        // Manejar cuando el proceso termina
-        satoriProcess.on('close', (code) => {
-          console.log(`Satori process exited with code: ${code}`);
-        });
+        // Desconectar el proceso hijo del proceso padre
+        satoriProcess.unref();
         
       } else {
         const satoriProcess = spawn('satori', ["-h",'-port', port], {
-          stdio: 'pipe',
+          stdio: 'ignore', // Ignorar la salida para que no se bloquee
           shell: true,
-          detached: true
+          detached: true,
+          windowsHide: true // Ocultar la ventana en Windows
         });
         
-        // Manejar errores del proceso
-        satoriProcess.on('error', (error) => {
-          console.error('Error starting Satori:', error);
-        });
-        
-        // Manejar la salida del proceso
-        satoriProcess.stdout?.on('data', (data) => {
-          console.log('Satori stdout:', data.toString());
-        });
-        
-        satoriProcess.stderr?.on('data', (data) => {
-          console.log('Satori stderr:', data.toString());
-        });
-        
-        // Manejar cuando el proceso termina
-        satoriProcess.on('close', (code) => {
-          console.log(`Satori process exited with code: ${code}`);
-        });
+        // Desconectar el proceso hijo del proceso padre
+        satoriProcess.unref();
       }
       
       // Wait a bit for the server to start
