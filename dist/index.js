@@ -88,7 +88,14 @@ var Satori = class {
    */
   connect() {
     return __async(this, null, function* () {
-      this.ws = new import_ws.default(this.host);
+      this.ws = new import_ws.default(this.host, {
+        handshakeTimeout: 0,
+        // Sin timeout en el handshake
+        perMessageDeflate: false,
+        // Deshabilitar compresión para mejor rendimiento
+        maxPayload: 0
+        // Sin límite de payload
+      });
       this.ws.on("message", (data) => {
         var _a, _b;
         const msg = JSON.parse(data.toString());

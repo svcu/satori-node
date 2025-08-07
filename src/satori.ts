@@ -269,7 +269,11 @@ export class Satori {
  
 
   async connect(): Promise<void> {
-    this.ws = new WebSocket(this.host);
+    this.ws = new WebSocket(this.host, {
+      handshakeTimeout: 0, // Sin timeout en el handshake
+      perMessageDeflate: false, // Deshabilitar compresión para mejor rendimiento
+      maxPayload: 0 // Sin límite de payload
+    });
 
     this.ws.on('message', (data) => {
       const msg = JSON.parse(data.toString());
