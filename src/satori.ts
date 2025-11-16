@@ -433,6 +433,17 @@ export class Satori {
     return this.send({ command: 'ASK', ...payload});
   }
 
+  async memory_stats() {
+    return this.send({ command: 'MEMORY_STATS'});
+  }
+
+  async cpu_stats() {
+    return this.send({ command: 'CPU_STATS'});
+  }
+
+  async get_operations() {
+    return this.send({ command: 'GET_OPERATIONS'});
+  }
 
   /**
    * Subscribe to real-time changes of an object by key.

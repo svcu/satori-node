@@ -266,6 +266,21 @@ var Satori = class {
       return this.send(__spreadValues({ command: "ASK" }, payload));
     });
   }
+  memory_stats() {
+    return __async(this, null, function* () {
+      return this.send({ command: "MEMORY_STATS" });
+    });
+  }
+  cpu_stats() {
+    return __async(this, null, function* () {
+      return this.send({ command: "CPU_STATS" });
+    });
+  }
+  get_operations() {
+    return __async(this, null, function* () {
+      return this.send({ command: "GET_OPERATIONS" });
+    });
+  }
   /**
    * Subscribe to real-time changes of an object by key.
    * @param key - The key of the object to subscribe to
