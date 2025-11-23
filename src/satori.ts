@@ -445,6 +445,11 @@ export class Satori {
     return this.send({ command: 'GET_OPERATIONS'});
   }
 
+
+  async get_insights() {
+    return this.send({ command: 'INSIGHTS'});
+  }
+
   /**
    * Subscribe to real-time changes of an object by key.
    * @param key - The key of the object to subscribe to
