@@ -1,6 +1,6 @@
 {
   "name": "satori-node",
-  "version": "1.0.62",
+  "version": "1.0.63",
   "description": "Satori driver for NodeJS",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
