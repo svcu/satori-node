@@ -1,4 +1,5 @@
 // index.ts
 
-export * from './satori';
+export * from "./core/SatoriClient";
+export * from "./react/useSatori";
 export * from './schema';

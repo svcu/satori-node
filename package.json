@@ -15,6 +15,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/cryptojs": "^3.1.33",
+    "@types/react": "^19.2.7",
     "@types/uuid": "^9.0.8",
     "@types/ws": "^8.5.12",
     "ts-node": "^10.9.2",
@@ -26,6 +27,7 @@
     "cryptojs": "^2.5.3",
     "js-crypto-aes": "^1.0.6",
     "node-aes": "^1.0.1",
+    "react": "^19.2.0",
     "satori-node": "^1.0.26",
     "uuid": "^10.0.0",
     "ws": "^8.18.0"
