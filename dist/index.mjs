@@ -14,6 +14,12 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
+var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
+  get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
+}) : x)(function(x) {
+  if (typeof require !== "undefined") return require.apply(this, arguments);
+  throw Error('Dynamic require of "' + x + '" is not supported');
+});
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
     var fulfilled = (value) => {
@@ -36,12 +42,18 @@ var __async = (__this, __arguments, generator) => {
 };
 
 // src/satori.ts
-import WebSocket from "ws";
 import { v4 as uuidv4 } from "uuid";
+var NodeWebSocket = null;
+if (typeof window === "undefined") {
+  NodeWebSocket = __require("ws");
+}
+function createWebSocket(url) {
+  if (typeof window !== "undefined") {
+    return new window.WebSocket(url);
+  }
+  return new NodeWebSocket(url);
+}
 var Satori = class {
-  /**
-   * Creates an instance of Satori.
-   */
   constructor({ username, password, host }) {
     this.ws = null;
     this.pending = /* @__PURE__ */ new Map();
@@ -51,178 +63,121 @@ var Satori = class {
     this.host = host;
   }
   /**
-   * Connects to the WebSocket server.
+   * Connect to Satori WebSocket
    */
   connect() {
     return __async(this, null, function* () {
-      this.ws = new WebSocket(this.host, {
-        handshakeTimeout: 0,
-        // Sin timeout en el handshake
-        perMessageDeflate: false,
-        // Deshabilitar compresión para mejor rendimiento
-        maxPayload: 0
-        // Sin límite de payload
-      });
-      this.ws.on("message", (data) => {
-        var _a, _b;
-        const msg = JSON.parse(data.toString());
+      this.ws = createWebSocket(this.host);
+      this.ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
         if (msg.type === "notification" && msg.key && this.subscriptions.has(msg.key)) {
-          (_a = this.subscriptions.get(msg.key)) == null ? void 0 : _a(msg.data);
+          this.subscriptions.get(msg.key)(msg.data);
           return;
         }
         if (msg.id && this.pending.has(msg.id)) {
-          (_b = this.pending.get(msg.id)) == null ? void 0 : _b(msg);
+          this.pending.get(msg.id)(msg);
           this.pending.delete(msg.id);
         }
-      });
+      };
       return new Promise((resolve, reject) => {
         if (!this.ws) return reject();
-        this.ws.on("open", resolve);
-        this.ws.on("error", reject);
+        this.ws.onopen = () => resolve();
+        this.ws.onerror = (err) => reject(err);
       });
     });
   }
   /**
-   * Sends a command with payload to the server.
+   * Send a command
    */
   send(commandPayload) {
     return new Promise((resolve) => {
       var _a;
       const id = uuidv4();
-      const username = this.username;
-      const password = this.password;
-      let msg = __spreadValues({ username, password, id }, commandPayload);
+      const msg = __spreadValues({
+        username: this.username,
+        password: this.password,
+        id
+      }, commandPayload);
       this.pending.set(id, resolve);
       (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify(msg));
     });
   }
-  /**
-   * Performs a SET operation.
-   */
+  // ---- Operations (unchanged) ----
   set(payload) {
     return __async(this, null, function* () {
-      const command = "SET";
-      return this.send(__spreadValues({ command }, payload));
+      return this.send(__spreadValues({ command: "SET" }, payload));
     });
   }
   push(payload) {
     return __async(this, null, function* () {
-      const command = "PUSH";
-      return this.send(__spreadValues({ command }, payload));
+      return this.send(__spreadValues({ command: "PUSH" }, payload));
     });
   }
   pop(payload) {
     return __async(this, null, function* () {
-      const command = "POP";
-      return this.send(__spreadValues({ command }, payload));
+      return this.send(__spreadValues({ command: "POP" }, payload));
     });
   }
   splice(payload) {
     return __async(this, null, function* () {
-      const command = "SPLICE";
-      return this.send(__spreadValues({ command }, payload));
+      return this.send(__spreadValues({ command: "SPLICE" }, payload));
     });
   }
   remove(payload) {
     return __async(this, null, function* () {
-      const command = "REMOVE";
-      return this.send(__spreadValues({ command }, payload));
+      return this.send(__spreadValues({ command: "REMOVE" }, payload));
     });
   }
-  /**
-   * Performs a GET operation.
-   */
   get(payload) {
     return __async(this, null, function* () {
-      const command = "GET";
-      return this.send(__spreadValues({ command }, payload));
+      return this.send(__spreadValues({ command: "GET" }, payload));
     });
   }
-  /**
-   * Performs a PUT operation.
-   */
   put(payload) {
     return __async(this, null, function* () {
-      const command = "PUT";
-      return this.send(__spreadValues({ command }, payload));
+      return this.send(__spreadValues({ command: "PUT" }, payload));
     });
   }
-  /**
-   * Performs a DELETE operation.
-   */
   delete(payload) {
     return __async(this, null, function* () {
-      const command = "DELETE";
-      return this.send(__spreadValues({ command }, payload));
+      return this.send(__spreadValues({ command: "DELETE" }, payload));
     });
   }
-  /**
-   * Performs a SET_VERTEX operation.
-   */
   setVertex(payload) {
     return __async(this, null, function* () {
       return this.send(__spreadValues({ command: "SET_VERTEX" }, payload));
     });
   }
-  /**
-   * Performs a GET_VERTEX operation.
-   */
   getVertex(payload) {
     return __async(this, null, function* () {
       return this.send(__spreadValues({ command: "GET_VERTEX" }, payload));
     });
   }
-  /**
-   * Performs a Natural Language Query 
-   */
-  query(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "QUERY" }, payload));
-    });
-  }
-  /**
-   * Performs a DELETE_VERTEX operation.
-   */
   deleteVertex(payload) {
     return __async(this, null, function* () {
       return this.send(__spreadValues({ command: "DELETE_VERTEX" }, payload));
     });
   }
-  /**
-   * Performs a DFS traversal.
-   */
   dfs(payload) {
     return __async(this, null, function* () {
       return this.send(__spreadValues({ command: "DFS" }, payload));
     });
   }
-  /**
-   * Encrypts data.
-   */
   encrypt(payload) {
     return __async(this, null, function* () {
       return this.send(__spreadValues({ command: "ENCRYPT" }, payload));
     });
   }
-  /**
-   * Decrypts data.
-   */
   decrypt(payload) {
     return __async(this, null, function* () {
       return this.send(__spreadValues({ command: "DECRYPT" }, payload));
     });
   }
-  /**
-   * Trains a fine-tunned embedding model for your data.
-   */
   train() {
     return __async(this, null, function* () {
       return this.send({ command: "TRAIN", type: "train" });
     });
   }
-  /**
-   * Retrieves a list of Aproximate Nearest Neighbors.
-   */
   ann(payload) {
     return __async(this, null, function* () {
       return this.send(__spreadValues({ command: "ANN" }, payload));
@@ -231,6 +186,11 @@ var Satori = class {
   ask(payload) {
     return __async(this, null, function* () {
       return this.send(__spreadValues({ command: "ASK" }, payload));
+    });
+  }
+  query(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "QUERY" }, payload));
     });
   }
   memory_stats() {
@@ -254,23 +214,19 @@ var Satori = class {
     });
   }
   /**
-   * Subscribe to real-time changes of an object by key.
-   * @param key - The key of the object to subscribe to
-   * @param callback - Function called with updated data on each change
-   * @example
-   * client.notify('user:123', data => console.log('Updated:', data));
+   * Subscriptions
    */
   notify(key, callback) {
     var _a;
     this.subscriptions.set(key, callback);
-    (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({ command: "NOTIFY", key, id: uuidv4(), username: this.username, password: this.password }));
+    (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({
+      command: "NOTIFY",
+      key,
+      id: uuidv4(),
+      username: this.username,
+      password: this.password
+    }));
   }
-  /**
-   * Unsubscribe from real-time notifications for a key.
-   * @param key - The key to unsubscribe
-   * @example
-   * client.unnotify('user:123');
-   */
 };
 
 // src/schema.ts
