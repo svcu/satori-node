@@ -1,6 +1,10 @@
-// src/react/useSatori.ts
-import { useCallback, useEffect, useRef, useState } from "react";
-import { SatoriClient } from "../core/SatoriClient";
+// useSatori.tsx
+import { useState, useRef, useCallback } from "react";
+import { SatoriClient } from "../core/SatoriClient"; // ajusta la ruta según tu sdk
+
+// ---------------------------
+// 📌 Types
+// ---------------------------
 
 export interface SatoriCredentials {
   url?: string;
@@ -8,76 +12,102 @@ export interface SatoriCredentials {
   password?: string;
 }
 
-export function useSatori(initial?: SatoriCredentials) {
+export interface UseSatori {
+  connected: boolean;
+  client: SatoriClient | null;
+
+  setCredentials: (creds: SatoriCredentials) => void;
+  connect: (creds?: SatoriCredentials) => Promise<void>;
+
+
+  get: (key: string | any) => Promise<any> | undefined;
+  set: (key: any, value?: any) => Promise<any> | undefined;
+
+  ask: (question: any) => Promise<any> | undefined;
+  query: (q: any) => Promise<any> | undefined;
+  ann: (params: any) => Promise<any> | undefined;
+
+}
+
+// ---------------------------
+// 📌 Hook
+// ---------------------------
+
+export function useSatori(initial?: SatoriCredentials): UseSatori {
   const [connected, setConnected] = useState(false);
   const [credentials, setCredentialsState] = useState<SatoriCredentials>(initial || {});
-
   const clientRef = useRef<SatoriClient | null>(null);
 
-  // --- PUBLIC SETTER ---
+  // ---------------------------
+  // 👉 Set credentials
+  // ---------------------------
   const setCredentials = useCallback((creds: SatoriCredentials) => {
-    setCredentialsState(prev => ({
-      ...prev,
-      ...creds,
-    }));
+    setCredentialsState(prev => ({ ...prev, ...creds }));
   }, []);
 
-  // --- INTERNAL CONNECTOR ---
-  const internalConnect = useCallback(async (creds: SatoriCredentials) => {
-    if (!creds.url || !creds.username || !creds.password) return;
+  // ---------------------------
+  // 👉 Connect
+  // ---------------------------
+  const connect = useCallback(
+    async (creds?: SatoriCredentials) => {
+      if (creds) {
+        setCredentials(creds);
+      }
 
-    
+      const { url, username, password } = { ...credentials, ...creds };
 
-    const client = new SatoriClient({
-        url: creds.url,
-        username: creds.username,
-        password: creds.password
-    });
+      if (!url || !username || !password) {
+        throw new Error("Missing credentials: url, username and password are required.");
+      }
 
-    clientRef.current = client;
+   
 
-    try {
+      const client = new SatoriClient({
+        url: url,
+        username,
+        password
+      });
+
+      clientRef.current = client;
+
       await client.connect();
       setConnected(true);
-    } catch (err) {
-      console.error("Satori connection error:", err);
-      setConnected(false);
-    }
-  }, []);
+    },
+    [credentials, setCredentials]
+  );
 
-  // --- PUBLIC CONNECT() ---
-  const connect = useCallback(async (creds: SatoriCredentials) => {
-    setCredentials(creds);
-  }, [setCredentials]);
+  // ---------------------------
+  // 👉 Disconnect
+  // ---------------------------
 
+  // ---------------------------
+  // 👉 Proxy methods
+  // ---------------------------
 
-
-  // --- WHEN CREDENTIALS CHANGE -> RECONNECT ---
-  useEffect(() => {
-    internalConnect(credentials);
-  }, [credentials, internalConnect]);
-
-  // --- WRAPPED METHODS ---
-  const get = useCallback(async (key: string) => {
+  const get = useCallback((key: any) => {
     return clientRef.current?.get(key);
   }, []);
 
-  const set = useCallback(async (key: string, value: any) => {
+  const set = useCallback((key: any, value?: any) => {
     return clientRef.current?.set(key, value);
   }, []);
 
-  const ask = useCallback(async (input: string) => {
-    return clientRef.current?.ask(input);
+  const ask = useCallback((question: any) => {
+    return clientRef.current?.ask(question);
   }, []);
 
-  const query = useCallback(async (input: string) => {
-    return clientRef.current?.query(input);
+  const query = useCallback((q: any) => {
+    return clientRef.current?.query(q);
   }, []);
 
-  const ann = useCallback(async (input: any) => {
-    return clientRef.current?.ann(input);
+  const ann = useCallback((params: any) => {
+    return clientRef.current?.ann(params);
   }, []);
 
+
+  // ---------------------------
+  // 👉 Return object
+  // ---------------------------
   return {
     connected,
     client: clientRef.current,
@@ -85,10 +115,13 @@ export function useSatori(initial?: SatoriCredentials) {
     setCredentials,
     connect,
 
+
     get,
     set,
+
     ask,
     query,
     ann,
+
   };
 }

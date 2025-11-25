@@ -223,48 +223,46 @@ function useSatori(initial) {
   const setCredentials = (0, import_react.useCallback)((creds) => {
     setCredentialsState((prev) => __spreadValues(__spreadValues({}, prev), creds));
   }, []);
-  const internalConnect = (0, import_react.useCallback)((creds) => __async(this, null, function* () {
-    if (!creds.url || !creds.username || !creds.password) return;
-    const client = new SatoriClient({
-      url: creds.url,
-      username: creds.username,
-      password: creds.password
-    });
-    clientRef.current = client;
-    try {
+  const connect = (0, import_react.useCallback)(
+    (creds) => __async(this, null, function* () {
+      if (creds) {
+        setCredentials(creds);
+      }
+      const { url, username, password } = __spreadValues(__spreadValues({}, credentials), creds);
+      if (!url || !username || !password) {
+        throw new Error("Missing credentials: url, username and password are required.");
+      }
+      const client = new SatoriClient({
+        url,
+        username,
+        password
+      });
+      clientRef.current = client;
       yield client.connect();
       setConnected(true);
-    } catch (err) {
-      console.error("Satori connection error:", err);
-      setConnected(false);
-    }
-  }), []);
-  const connect = (0, import_react.useCallback)((creds) => __async(this, null, function* () {
-    setCredentials(creds);
-  }), [setCredentials]);
-  (0, import_react.useEffect)(() => {
-    internalConnect(credentials);
-  }, [credentials, internalConnect]);
-  const get = (0, import_react.useCallback)((key) => __async(this, null, function* () {
+    }),
+    [credentials, setCredentials]
+  );
+  const get = (0, import_react.useCallback)((key) => {
     var _a;
     return (_a = clientRef.current) == null ? void 0 : _a.get(key);
-  }), []);
-  const set = (0, import_react.useCallback)((key, value) => __async(this, null, function* () {
+  }, []);
+  const set = (0, import_react.useCallback)((key, value) => {
     var _a;
     return (_a = clientRef.current) == null ? void 0 : _a.set(key, value);
-  }), []);
-  const ask = (0, import_react.useCallback)((input) => __async(this, null, function* () {
+  }, []);
+  const ask = (0, import_react.useCallback)((question) => {
     var _a;
-    return (_a = clientRef.current) == null ? void 0 : _a.ask(input);
-  }), []);
-  const query = (0, import_react.useCallback)((input) => __async(this, null, function* () {
+    return (_a = clientRef.current) == null ? void 0 : _a.ask(question);
+  }, []);
+  const query = (0, import_react.useCallback)((q) => {
     var _a;
-    return (_a = clientRef.current) == null ? void 0 : _a.query(input);
-  }), []);
-  const ann = (0, import_react.useCallback)((input) => __async(this, null, function* () {
+    return (_a = clientRef.current) == null ? void 0 : _a.query(q);
+  }, []);
+  const ann = (0, import_react.useCallback)((params) => {
     var _a;
-    return (_a = clientRef.current) == null ? void 0 : _a.ann(input);
-  }), []);
+    return (_a = clientRef.current) == null ? void 0 : _a.ann(params);
+  }, []);
   return {
     connected,
     client: clientRef.current,
