@@ -7,14 +7,16 @@ const isBrowser = typeof window !== "undefined";
 export class SatoriClient {
   private ws: ISocket | null = null;
   private url: string;
-  private token?: string;
+  private username? : string;
+  private password? : string;
   private handlers = new Set<(msg: any) => void>();
 
   connected = false;
 
-  constructor(options: { url: string; token?: string }) {
+  constructor(options: { url: string; username?: string; password?: string }) {
     this.url = options.url;
-    this.token = options.token;
+    this.username = options.username;
+    this.password = options.password;
   }
 
   async connect() {
@@ -67,11 +69,15 @@ export class SatoriClient {
       throw new Error("WebSocket is not ready");
     }
 
+    const username = this.username;
+    const password = this.password;
+
     const message = {
       id: uuid(),
       op,
       payload,
-      token: this.token,
+      username,
+      password
     };
 
     this.ws.send(JSON.stringify(message));

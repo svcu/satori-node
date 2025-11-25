@@ -1,21 +1,12 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    }
-  return a;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
 var __export = (target, all) => {
   for (var name in all)
@@ -29,6 +20,14 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -51,205 +50,193 @@ var __async = (__this, __arguments, generator) => {
   });
 };
 
+// src/core/transport-node.ts
+var transport_node_exports = {};
+__export(transport_node_exports, {
+  createNodeSocket: () => createNodeSocket
+});
+function createNodeSocket(url) {
+  const socket = new import_ws.default(url);
+  return {
+    get readyState() {
+      return socket.readyState;
+    },
+    send(data) {
+      socket.send(data);
+    },
+    onopen: null,
+    onmessage: null,
+    onclose: null
+  };
+}
+var import_ws;
+var init_transport_node = __esm({
+  "src/core/transport-node.ts"() {
+    "use strict";
+    import_ws = __toESM(require("ws"));
+  }
+});
+
+// src/core/transport-browser.ts
+var transport_browser_exports = {};
+__export(transport_browser_exports, {
+  createBrowserSocket: () => createBrowserSocket
+});
+function createBrowserSocket(url) {
+  const socket = new WebSocket(url);
+  return socket;
+}
+var init_transport_browser = __esm({
+  "src/core/transport-browser.ts"() {
+    "use strict";
+  }
+});
+
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
-  Satori: () => Satori
+  SatoriClient: () => SatoriClient,
+  useSatori: () => useSatori
 });
 module.exports = __toCommonJS(src_exports);
 
-// src/satori.ts
+// src/core/SatoriClient.ts
 var import_uuid = require("uuid");
-var NodeWebSocket = null;
-if (typeof window === "undefined") {
-  NodeWebSocket = require("ws");
-}
-function createWebSocket(url) {
-  if (typeof window !== "undefined") {
-    return new window.WebSocket(url);
-  }
-  return new NodeWebSocket(url);
-}
-var Satori = class {
-  constructor({ username, password, host }) {
+var isBrowser = typeof window !== "undefined";
+var SatoriClient = class {
+  constructor(options) {
     this.ws = null;
-    this.pending = /* @__PURE__ */ new Map();
-    this.subscriptions = /* @__PURE__ */ new Map();
-    this.username = username;
-    this.password = password;
-    this.host = host;
+    this.handlers = /* @__PURE__ */ new Set();
+    this.connected = false;
+    this.url = options.url;
+    this.token = options.token;
   }
-  /**
-   * Connect to Satori WebSocket
-   */
   connect() {
     return __async(this, null, function* () {
-      this.ws = createWebSocket(this.host);
-      this.ws.onmessage = (event) => {
-        const msg = JSON.parse(event.data);
-        if (msg.type === "notification" && msg.key && this.subscriptions.has(msg.key)) {
-          this.subscriptions.get(msg.key)(msg.data);
-          return;
-        }
-        if (msg.id && this.pending.has(msg.id)) {
-          this.pending.get(msg.id)(msg);
-          this.pending.delete(msg.id);
-        }
-      };
-      return new Promise((resolve, reject) => {
-        if (!this.ws) return reject();
-        this.ws.onopen = () => resolve();
-        this.ws.onerror = (err) => reject(err);
+      if (this.ws) return;
+      const { createNodeSocket: createNodeSocket2 } = yield Promise.resolve().then(() => (init_transport_node(), transport_node_exports)).catch(() => ({
+        createNodeSocket: null
+      }));
+      const { createBrowserSocket: createBrowserSocket2 } = yield Promise.resolve().then(() => (init_transport_browser(), transport_browser_exports)).catch(() => ({
+        createBrowserSocket: null
+      }));
+      const socketCreator = isBrowser ? createBrowserSocket2 : createNodeSocket2;
+      if (!socketCreator) throw new Error("No WebSocket available.");
+      const ws = socketCreator(this.url);
+      this.ws = ws;
+      return new Promise((resolve) => {
+        ws.onopen = () => {
+          this.connected = true;
+          resolve();
+        };
+        ws.onmessage = (event) => {
+          let json;
+          try {
+            json = JSON.parse(event.data);
+          } catch (e) {
+            return;
+          }
+          this.handlers.forEach((h) => h(json));
+        };
+        ws.onclose = () => {
+          this.connected = false;
+        };
       });
     });
   }
-  /**
-   * Send a command
-   */
-  send(commandPayload) {
+  onMessage(handler) {
+    this.handlers.add(handler);
+    return () => this.handlers.delete(handler);
+  }
+  send(op, payload) {
+    if (!this.ws || this.ws.readyState !== 1) {
+      throw new Error("WebSocket is not ready");
+    }
+    const message = {
+      id: (0, import_uuid.v4)(),
+      op,
+      payload,
+      token: this.token
+    };
+    this.ws.send(JSON.stringify(message));
+    return message.id;
+  }
+  // API ----------
+  request(op, payload) {
     return new Promise((resolve) => {
-      var _a;
-      const id = (0, import_uuid.v4)();
-      const msg = __spreadValues({
-        username: this.username,
-        password: this.password,
-        id
-      }, commandPayload);
-      this.pending.set(id, resolve);
-      (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify(msg));
+      const id = this.send(op, payload);
+      const off = this.onMessage((msg) => {
+        if (msg.id === id) {
+          off();
+          resolve(msg);
+        }
+      });
     });
   }
-  // ---- Operations (unchanged) ----
-  set(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "SET" }, payload));
-    });
+  get(key) {
+    return this.request("GET", { key });
   }
-  push(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "PUSH" }, payload));
-    });
+  set(key, value) {
+    return this.request("SET", { key, value });
   }
-  pop(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "POP" }, payload));
-    });
+  ask(prompt) {
+    return this.request("ASK", { prompt });
   }
-  splice(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "SPLICE" }, payload));
-    });
+  query(prompt) {
+    return this.request("QUERY", { prompt });
   }
-  remove(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "REMOVE" }, payload));
-    });
-  }
-  get(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "GET" }, payload));
-    });
-  }
-  put(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "PUT" }, payload));
-    });
-  }
-  delete(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "DELETE" }, payload));
-    });
-  }
-  setVertex(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "SET_VERTEX" }, payload));
-    });
-  }
-  getVertex(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "GET_VERTEX" }, payload));
-    });
-  }
-  deleteVertex(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "DELETE_VERTEX" }, payload));
-    });
-  }
-  dfs(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "DFS" }, payload));
-    });
-  }
-  encrypt(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "ENCRYPT" }, payload));
-    });
-  }
-  decrypt(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "DECRYPT" }, payload));
-    });
+  ann(vector, top_k = 10) {
+    return this.request("ANN", { vector, top_k });
   }
   train() {
-    return __async(this, null, function* () {
-      return this.send({ command: "TRAIN", type: "train" });
-    });
+    return this.request("TRAIN", {});
   }
-  ann(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "ANN" }, payload));
-    });
-  }
-  ask(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "ASK" }, payload));
-    });
-  }
-  query(payload) {
-    return __async(this, null, function* () {
-      return this.send(__spreadValues({ command: "QUERY" }, payload));
-    });
-  }
-  memory_stats() {
-    return __async(this, null, function* () {
-      return this.send({ command: "MEMORY_STATS" });
-    });
-  }
-  cpu_stats() {
-    return __async(this, null, function* () {
-      return this.send({ command: "CPU_STATS" });
-    });
-  }
-  get_operations() {
-    return __async(this, null, function* () {
-      return this.send({ command: "GET_OPERATIONS" });
-    });
-  }
-  get_insights() {
-    return __async(this, null, function* () {
-      return this.send({ command: "INSIGHTS" });
-    });
-  }
-  /**
-   * Subscriptions
-   */
-  notify(key, callback) {
-    var _a;
-    this.subscriptions.set(key, callback);
-    (_a = this.ws) == null ? void 0 : _a.send(JSON.stringify({
-      command: "NOTIFY",
-      key,
-      id: (0, import_uuid.v4)(),
-      username: this.username,
-      password: this.password
-    }));
+  putAllWith(obj) {
+    return this.request("PUT_ALL_WITH", obj);
   }
 };
+
+// src/react/useSatori.ts
+var import_react = require("react");
+function useSatori(options) {
+  const clientRef = (0, import_react.useRef)(null);
+  const [connected, setConnected] = (0, import_react.useState)(false);
+  const [lastMessage, setLastMessage] = (0, import_react.useState)(null);
+  if (!clientRef.current) {
+    clientRef.current = new SatoriClient(options);
+  }
+  const client = clientRef.current;
+  (0, import_react.useEffect)(() => {
+    let unsubscribe;
+    client.connect().then(() => {
+      setConnected(true);
+      unsubscribe = client.onMessage((msg) => {
+        setLastMessage(msg);
+      });
+    });
+    return () => {
+      unsubscribe == null ? void 0 : unsubscribe();
+    };
+  }, []);
+  return {
+    connected,
+    lastMessage,
+    // API identical to original client
+    get: client.get.bind(client),
+    set: client.set.bind(client),
+    ask: client.ask.bind(client),
+    query: client.query.bind(client),
+    train: client.train.bind(client),
+    ann: client.ann.bind(client),
+    putAllWith: client.putAllWith.bind(client)
+  };
+}
 
 // src/schema.ts
 var import_uuid2 = require("uuid");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  Satori
+  SatoriClient,
+  useSatori
 });
 //# sourceMappingURL=index.js.map

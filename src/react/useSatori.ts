@@ -1,44 +1,94 @@
 // src/react/useSatori.ts
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SatoriClient } from "../core/SatoriClient";
 
-export function useSatori(options: { url: string; token?: string }) {
-  const clientRef = useRef<SatoriClient | null>(null);
+export interface SatoriCredentials {
+  url?: string;
+  username?: string;
+  password?: string;
+}
+
+export function useSatori(initial?: SatoriCredentials) {
   const [connected, setConnected] = useState(false);
-  const [lastMessage, setLastMessage] = useState<any>(null);
+  const [credentials, setCredentialsState] = useState<SatoriCredentials>(initial || {});
 
-  if (!clientRef.current) {
-    clientRef.current = new SatoriClient(options);
-  }
+  const clientRef = useRef<SatoriClient | null>(null);
 
-  const client = clientRef.current;
+  // --- PUBLIC SETTER ---
+  const setCredentials = useCallback((creds: SatoriCredentials) => {
+    setCredentialsState(prev => ({
+      ...prev,
+      ...creds,
+    }));
+  }, []);
 
-  useEffect(() => {
-    let unsubscribe: any;
+  // --- INTERNAL CONNECTOR ---
+  const internalConnect = useCallback(async (creds: SatoriCredentials) => {
+    if (!creds.url || !creds.username || !creds.password) return;
 
-    client.connect().then(() => {
-      setConnected(true);
-      unsubscribe = client.onMessage((msg: any) => {
-        setLastMessage(msg);
-      });
+    
+
+    const client = new SatoriClient({
+        url: creds.url,
+        username: creds.username,
+        password: creds.password
     });
 
-    return () => {
-      unsubscribe?.();
-    };
+    clientRef.current = client;
+
+    try {
+      await client.connect();
+      setConnected(true);
+    } catch (err) {
+      console.error("Satori connection error:", err);
+      setConnected(false);
+    }
+  }, []);
+
+  // --- PUBLIC CONNECT() ---
+  const connect = useCallback(async (creds: SatoriCredentials) => {
+    setCredentials(creds);
+  }, [setCredentials]);
+
+
+
+  // --- WHEN CREDENTIALS CHANGE -> RECONNECT ---
+  useEffect(() => {
+    internalConnect(credentials);
+  }, [credentials, internalConnect]);
+
+  // --- WRAPPED METHODS ---
+  const get = useCallback(async (key: string) => {
+    return clientRef.current?.get(key);
+  }, []);
+
+  const set = useCallback(async (key: string, value: any) => {
+    return clientRef.current?.set(key, value);
+  }, []);
+
+  const ask = useCallback(async (input: string) => {
+    return clientRef.current?.ask(input);
+  }, []);
+
+  const query = useCallback(async (input: string) => {
+    return clientRef.current?.query(input);
+  }, []);
+
+  const ann = useCallback(async (input: any) => {
+    return clientRef.current?.ann(input);
   }, []);
 
   return {
     connected,
-    lastMessage,
+    client: clientRef.current,
 
-    // API identical to original client
-    get: client.get.bind(client),
-    set: client.set.bind(client),
-    ask: client.ask.bind(client),
-    query: client.query.bind(client),
-    train: client.train.bind(client),
-    ann: client.ann.bind(client),
-    putAllWith: client.putAllWith.bind(client),
+    setCredentials,
+    connect,
+
+    get,
+    set,
+    ask,
+    query,
+    ann,
   };
 }
