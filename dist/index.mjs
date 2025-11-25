@@ -1,5 +1,20 @@
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
@@ -78,7 +93,8 @@ var SatoriClient = class {
     this.handlers = /* @__PURE__ */ new Set();
     this.connected = false;
     this.url = options.url;
-    this.token = options.token;
+    this.username = options.username;
+    this.password = options.password;
   }
   connect() {
     return __async(this, null, function* () {
@@ -121,11 +137,14 @@ var SatoriClient = class {
     if (!this.ws || this.ws.readyState !== 1) {
       throw new Error("WebSocket is not ready");
     }
+    const username = this.username;
+    const password = this.password;
     const message = {
       id: uuid(),
       op,
       payload,
-      token: this.token
+      username,
+      password
     };
     this.ws.send(JSON.stringify(message));
     return message.id;
@@ -166,38 +185,66 @@ var SatoriClient = class {
 };
 
 // src/react/useSatori.ts
-import { useEffect, useRef, useState } from "react";
-function useSatori(options) {
-  const clientRef = useRef(null);
+import { useCallback, useEffect, useRef, useState } from "react";
+function useSatori(initial) {
   const [connected, setConnected] = useState(false);
-  const [lastMessage, setLastMessage] = useState(null);
-  if (!clientRef.current) {
-    clientRef.current = new SatoriClient(options);
-  }
-  const client = clientRef.current;
-  useEffect(() => {
-    let unsubscribe;
-    client.connect().then(() => {
-      setConnected(true);
-      unsubscribe = client.onMessage((msg) => {
-        setLastMessage(msg);
-      });
-    });
-    return () => {
-      unsubscribe == null ? void 0 : unsubscribe();
-    };
+  const [credentials, setCredentialsState] = useState(initial || {});
+  const clientRef = useRef(null);
+  const setCredentials = useCallback((creds) => {
+    setCredentialsState((prev) => __spreadValues(__spreadValues({}, prev), creds));
   }, []);
+  const internalConnect = useCallback((creds) => __async(this, null, function* () {
+    if (!creds.url || !creds.username || !creds.password) return;
+    const client = new SatoriClient({
+      url: creds.url,
+      username: creds.username,
+      password: creds.password
+    });
+    clientRef.current = client;
+    try {
+      yield client.connect();
+      setConnected(true);
+    } catch (err) {
+      console.error("Satori connection error:", err);
+      setConnected(false);
+    }
+  }), []);
+  const connect = useCallback((creds) => __async(this, null, function* () {
+    setCredentials(creds);
+  }), [setCredentials]);
+  useEffect(() => {
+    internalConnect(credentials);
+  }, [credentials, internalConnect]);
+  const get = useCallback((key) => __async(this, null, function* () {
+    var _a;
+    return (_a = clientRef.current) == null ? void 0 : _a.get(key);
+  }), []);
+  const set = useCallback((key, value) => __async(this, null, function* () {
+    var _a;
+    return (_a = clientRef.current) == null ? void 0 : _a.set(key, value);
+  }), []);
+  const ask = useCallback((input) => __async(this, null, function* () {
+    var _a;
+    return (_a = clientRef.current) == null ? void 0 : _a.ask(input);
+  }), []);
+  const query = useCallback((input) => __async(this, null, function* () {
+    var _a;
+    return (_a = clientRef.current) == null ? void 0 : _a.query(input);
+  }), []);
+  const ann = useCallback((input) => __async(this, null, function* () {
+    var _a;
+    return (_a = clientRef.current) == null ? void 0 : _a.ann(input);
+  }), []);
   return {
     connected,
-    lastMessage,
-    // API identical to original client
-    get: client.get.bind(client),
-    set: client.set.bind(client),
-    ask: client.ask.bind(client),
-    query: client.query.bind(client),
-    train: client.train.bind(client),
-    ann: client.ann.bind(client),
-    putAllWith: client.putAllWith.bind(client)
+    client: clientRef.current,
+    setCredentials,
+    connect,
+    get,
+    set,
+    ask,
+    query,
+    ann
   };
 }
 
