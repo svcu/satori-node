@@ -213,6 +213,11 @@ var Satori = class {
       return this.send({ command: "INSIGHTS" });
     });
   }
+  set_middleware(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "SET_MIDDLEWARE" }, payload));
+    });
+  }
   /**
    * Subscriptions
    */

@@ -42,6 +42,7 @@ export interface PopPayload{ key?: string; array: string; encryption_key?: strin
 export interface SplicePayload{ key?: string; array: string; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; }
 export interface RemovePayload{ key?: string; array: string; value: any; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; }
 export interface ANNPayload { key: string; top_k?: number; }
+export interface SetMiddlewarePayload{operation: string; middleware: string};
 interface CommandPayload { command: string; [key: string]: any; }
 
 /**
@@ -131,6 +132,7 @@ export class Satori {
   async cpu_stats() { return this.send({ command: "CPU_STATS" }); }
   async get_operations() { return this.send({ command: "GET_OPERATIONS" }); }
   async get_insights() { return this.send({ command: "INSIGHTS" }); }
+  async set_middleware(payload: SetMiddlewarePayload) {return this.send({command: "SET_MIDDLEWARE", ...payload})}
 
   /**
    * Subscriptions
