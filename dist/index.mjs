@@ -173,11 +173,6 @@ var Satori = class {
       return this.send(__spreadValues({ command: "DECRYPT" }, payload));
     });
   }
-  train() {
-    return __async(this, null, function* () {
-      return this.send({ command: "TRAIN", type: "train" });
-    });
-  }
   ann(payload) {
     return __async(this, null, function* () {
       return this.send(__spreadValues({ command: "ANN" }, payload));
@@ -193,24 +188,14 @@ var Satori = class {
       return this.send(__spreadValues({ command: "QUERY" }, payload));
     });
   }
-  memory_stats() {
-    return __async(this, null, function* () {
-      return this.send({ command: "MEMORY_STATS" });
-    });
-  }
-  cpu_stats() {
-    return __async(this, null, function* () {
-      return this.send({ command: "CPU_STATS" });
-    });
-  }
-  get_operations() {
+  getOperations() {
     return __async(this, null, function* () {
       return this.send({ command: "GET_OPERATIONS" });
     });
   }
-  get_insights() {
+  getAccessFrequency(key) {
     return __async(this, null, function* () {
-      return this.send({ command: "INSIGHTS" });
+      return this.send({ command: "GET_ACCESS_FREQUENCY", key });
     });
   }
   set_middleware(payload) {

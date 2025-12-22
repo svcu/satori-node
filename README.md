@@ -37,6 +37,8 @@ const client = new Satori({
 await client.connect();
 
 ```
+If you are inserting a vector you must specify data to a [f32] and type to vector
+
 
 ---
 
@@ -48,9 +50,11 @@ await client.connect();
 await client.set({
   key: 'user:123',
   data: { name: 'John', email: 'john@example.com' },
-  type: 'user'
+  type: 'user' 
 });
 ```
+
+If you are inserting a vector you must specify data to a [f32] and type to vector
 
 ### Read Data
 
@@ -214,26 +218,28 @@ await client.remove({ key: 'user:123', array: 'friends', value: 'user:456' });
 
 ## 🤖 AI Methods
 
-Satori has AI features integrated that boost developers productivity. By example you can train an embedding model with your data and use it wherever you want to.
-You can train your embedding model manually whenever you want to but Satori will automatically fine-tune your model with any new updates and use this updated model for all emebedding operations.
+Satori has AI features integrated that boost developers productivity. 
 
-### 🔹 train
-
-Train an embedding model with your data. The model is accessible on `localhost:5000/model` The model will be at the root of your db in the `satori_semantic_model` folder.
-
-```python
-await client.train();
+### 🔹 set_middleware
+Make the LLM analyze incoming querys and decide if it must reject them, accept them or modify them.
+```javascript
+await client.set_middleware({
+    "operation": "SET",
+    "middleware": "Only accept requests that have the amount field specified, and convert its value to dollars"
+});
 ```
+
 
 ### 🔹 ann
 
 Perform an Aproximate Nearest Neighbors search
 
-```python
+```javascript
 await client.ann({'key' : 'user:123', 'top_k' : '5'});
 ```
 
 - **key**: Source object key.
+- **vector**: Vector of f32 instead of key
 - **top_k**: Number of nearest neighbors to return
 
 ### 🔹 query
@@ -257,6 +263,20 @@ await client.ask({'question' : 'How many user over 25 years old do we have. Just
 
 - **question**: Your question in natural language.
 - **ref**: The LLM backend. Must be `openai:model-name` or `ollama:model-name`, if not specified `openai:gpt-4o-mini` will be used as default. If you're using OpenAI as your backend you must specify the `OPENAI_API_KEY` env variable.
+
+## Analytics
+
+### 🔹 get_operations
+
+Returns all operations executed on the database.
+
+### 🔹 get_access_frequency
+
+Returns the number of times an object has been queried or accessed.
+```javascript
+await client.get_access_frequency({'key' : 'jhon'})
+```
+
 
 ## Responses
 

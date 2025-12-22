@@ -124,14 +124,11 @@ export class Satori {
   async dfs(payload: DfsPayload) { return this.send({ command: "DFS", ...payload }); }
   async encrypt(payload: EncryptPayload) { return this.send({ command: "ENCRYPT", ...payload }); }
   async decrypt(payload: DecryptPayload) { return this.send({ command: "DECRYPT", ...payload }); }
-  async train() { return this.send({ command: "TRAIN", type: "train" }); }
   async ann(payload: ANNPayload) { return this.send({ command: "ANN", ...payload }); }
   async ask(payload: AskPayload) { return this.send({ command: "ASK", ...payload }); }
   async query(payload: QueryPayload) { return this.send({ command: "QUERY", ...payload }); }
-  async memory_stats() { return this.send({ command: "MEMORY_STATS" }); }
-  async cpu_stats() { return this.send({ command: "CPU_STATS" }); }
-  async get_operations() { return this.send({ command: "GET_OPERATIONS" }); }
-  async get_insights() { return this.send({ command: "INSIGHTS" }); }
+  async getOperations() { return this.send({ command: "GET_OPERATIONS" }); }
+  async getAccessFrequency(key: string) { return this.send({ command: "GET_ACCESS_FREQUENCY", key: key }); }
   async set_middleware(payload: SetMiddlewarePayload) {return this.send({command: "SET_MIDDLEWARE", ...payload})}
 
   /**
