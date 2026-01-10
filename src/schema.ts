@@ -66,10 +66,37 @@ export default class Schema<T extends object> {
     return this.satori.dfs({ node: this.key, relation: relation, encryption_key });
   }
 
- 
+  async graphBfs(): Promise<any | undefined> {
+    return this.satori.graphBfs({ node: this.key });
+  }
 
- 
- 
+  async graphDfs(): Promise<any | undefined> {
+    return this.satori.graphDfs({ node: this.key });
+  }
+
+  async graphShortestPath(target: string): Promise<any | undefined> {
+    return this.satori.graphShortestPath({ node: this.key, target });
+  }
+
+  async graphConnectedComponents(): Promise<any | undefined> {
+    return this.satori.graphConnectedComponents();
+  }
+
+  async graphScc(): Promise<any | undefined> {
+    return this.satori.graphScc();
+  }
+
+  async graphDegreeCentrality(): Promise<any | undefined> {
+    return this.satori.graphDegreeCentrality();
+  }
+
+  async graphClosenessCentrality(): Promise<any | undefined> {
+    return this.satori.graphClosenessCentrality();
+  }
+
+  async graphCentroid(): Promise<any | undefined> {
+    return this.satori.graphCentroid();
+  }
 
   async push(value: any, array: string, encryption_key?: string): Promise<Boolean> {
     return await this.satori.push({key: this.key, value: value, array: array, encryption_key})

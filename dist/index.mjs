@@ -198,9 +198,64 @@ var Satori = class {
       return this.send({ command: "GET_ACCESS_FREQUENCY", key });
     });
   }
-  set_middleware(payload) {
+  setMiddleware(payload) {
     return __async(this, null, function* () {
       return this.send(__spreadValues({ command: "SET_MIDDLEWARE" }, payload));
+    });
+  }
+  setMindspace(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "SET_MINDSPACE" }, payload));
+    });
+  }
+  deleteMindspace(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "DELETE_MINDSPACE" }, payload));
+    });
+  }
+  chatMindspace(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "CHAT_MINDSPACE" }, payload));
+    });
+  }
+  graphBfs(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "GRAPH_BFS" }, payload));
+    });
+  }
+  graphDfs(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "GRAPH_DFS" }, payload));
+    });
+  }
+  graphShortestPath(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "GRAPH_SHORTEST_PATH" }, payload));
+    });
+  }
+  graphConnectedComponents() {
+    return __async(this, arguments, function* (payload = {}) {
+      return this.send(__spreadValues({ command: "GRAPH_CONNECTED_COMPONENTS" }, payload));
+    });
+  }
+  graphScc() {
+    return __async(this, arguments, function* (payload = {}) {
+      return this.send(__spreadValues({ command: "GRAPH_SCC" }, payload));
+    });
+  }
+  graphDegreeCentrality() {
+    return __async(this, arguments, function* (payload = {}) {
+      return this.send(__spreadValues({ command: "GRAPH_DEGREE_CENTRALITY" }, payload));
+    });
+  }
+  graphClosenessCentrality() {
+    return __async(this, arguments, function* (payload = {}) {
+      return this.send(__spreadValues({ command: "GRAPH_CLOSENESS_CENTRALITY" }, payload));
+    });
+  }
+  graphCentroid() {
+    return __async(this, arguments, function* (payload = {}) {
+      return this.send(__spreadValues({ command: "GRAPH_CENTROID" }, payload));
     });
   }
   /**

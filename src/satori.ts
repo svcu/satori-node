@@ -42,7 +42,18 @@ export interface PopPayload{ key?: string; array: string; encryption_key?: strin
 export interface SplicePayload{ key?: string; array: string; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; }
 export interface RemovePayload{ key?: string; array: string; value: any; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; }
 export interface ANNPayload { key: string; top_k?: number; }
+export interface SetMindspacePayload { mindspace_id?: string; config: string; }
+export interface DeleteMindspacePayload { mindspace_id: string; }
+export interface ChatMindspacePayload { minspace_id: string; message: string}
 export interface SetMiddlewarePayload{operation: string; middleware: string};
+export interface GraphBfsPayload { node: string; }
+export interface GraphDfsPayload { node: string; }
+export interface GraphShortestPathPayload { node: string; target: string; }
+export interface GraphConnectedComponentsPayload {}
+export interface GraphSccPayload {}
+export interface GraphDegreeCentralityPayload {}
+export interface GraphClosenessCentralityPayload {}
+export interface GraphCentroidPayload {}
 interface CommandPayload { command: string; [key: string]: any; }
 
 /**
@@ -129,7 +140,19 @@ export class Satori {
   async query(payload: QueryPayload) { return this.send({ command: "QUERY", ...payload }); }
   async getOperations() { return this.send({ command: "GET_OPERATIONS" }); }
   async getAccessFrequency(key: string) { return this.send({ command: "GET_ACCESS_FREQUENCY", key: key }); }
-  async set_middleware(payload: SetMiddlewarePayload) {return this.send({command: "SET_MIDDLEWARE", ...payload})}
+  async setMiddleware(payload: SetMiddlewarePayload) {return this.send({command: "SET_MIDDLEWARE", ...payload})}
+  async setMindspace(payload: SetMindspacePayload){return this.send({command: "SET_MINDSPACE", ...payload})}
+  async deleteMindspace(payload: DeleteMindspacePayload){return this.send({command: "DELETE_MINDSPACE", ...payload})}
+  async chatMindspace(payload: ChatMindspacePayload){return this.send({command: "CHAT_MINDSPACE", ...payload})}
+  async graphBfs(payload: GraphBfsPayload) { return this.send({ command: "GRAPH_BFS", ...payload }); }
+  async graphDfs(payload: GraphDfsPayload) { return this.send({ command: "GRAPH_DFS", ...payload }); }
+  async graphShortestPath(payload: GraphShortestPathPayload) { return this.send({ command: "GRAPH_SHORTEST_PATH", ...payload }); }
+  async graphConnectedComponents(payload: GraphConnectedComponentsPayload = {}) { return this.send({ command: "GRAPH_CONNECTED_COMPONENTS", ...payload }); }
+  async graphScc(payload: GraphSccPayload = {}) { return this.send({ command: "GRAPH_SCC", ...payload }); }
+  async graphDegreeCentrality(payload: GraphDegreeCentralityPayload = {}) { return this.send({ command: "GRAPH_DEGREE_CENTRALITY", ...payload }); }
+  async graphClosenessCentrality(payload: GraphClosenessCentralityPayload = {}) { return this.send({ command: "GRAPH_CLOSENESS_CENTRALITY", ...payload }); }
+  async graphCentroid(payload: GraphCentroidPayload = {}) { return this.send({ command: "GRAPH_CENTROID", ...payload }); }
+
 
   /**
    * Subscriptions
