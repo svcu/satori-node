@@ -123,11 +123,65 @@ await client.setVertex({
 });
 ```
 
+Retrieve vertices:
+
+```js
+await client.getVertex({ key: 'user:123', encryption_key: 'secret' });
+```
+
+Delete a vertex:
+
+```js
+await client.deleteVertex({ key: 'user:123', vertex: 'friend:456', encryption_key: 'secret' });
+```
+
 And traverse the graph with DFS:
 
 ```js
-await client.dfs({ node: 'user:123', encryption_key: 'secret' });
+await client.dfs({ node: 'user:123', relation: 'friend', encryption_key: 'secret' });
 ```
+
+Additional graph algorithms:
+
+- **BFS Traversal**:
+  ```js
+  await client.graphBfs({ node: 'user:123' });
+  ```
+
+- **DFS Traversal**:
+  ```js
+  await client.graphDfs({ node: 'user:123' });
+  ```
+
+- **Shortest Path**:
+  ```js
+  await client.graphShortestPath({ node: 'user:123', target: 'user:456' });
+  ```
+
+- **Connected Components**:
+  ```js
+  await client.graphConnectedComponents();
+  ```
+
+- **Strongly Connected Components (SCC)**:
+  ```js
+  await client.graphScc();
+  ```
+
+- **Degree Centrality**:
+  ```js
+  await client.graphDegreeCentrality();
+  ```
+
+- **Closeness Centrality**:
+  ```js
+  await client.graphClosenessCentrality();
+  ```
+
+- **Graph Centroid**:
+  ```js
+  await client.graphCentroid();
+  ```
 
 ---
 
@@ -160,6 +214,7 @@ await user.set();
 It includes useful methods such as:
 
 - `set`, `delete`, `encrypt`, `setVertex`, `getVertex`, `deleteVertex`, `dfs`
+- Graph methods: `graphBfs`, `graphDfs`, `graphShortestPath`, `graphConnectedComponents`, `graphScc`, `graphDegreeCentrality`, `graphClosenessCentrality`, `graphCentroid`
 - Array methods: `push`, `pop`, `splice`, `remove`
 
 ---
