@@ -319,6 +319,46 @@ await client.ask({'question' : 'How many user over 25 years old do we have. Just
 - **question**: Your question in natural language.
 - **ref**: The LLM backend. Must be `openai:model-name` or `ollama:model-name`, if not specified `openai:gpt-4o-mini` will be used as default. If you're using OpenAI as your backend you must specify the `OPENAI_API_KEY` env variable.
 
+### 🔹 set_mindspace
+
+Create or update a mindspace with a specific configuration.
+
+```javascript
+await client.set_mindspace({
+  mindspace_id: 'my_mindspace',
+  config: 'Configuration string for the mindspace'
+});
+```
+
+- **mindspace_id** (optional): Identifier for the mindspace. If not provided, a default will be used.
+- **config**: Configuration string defining the mindspace behavior.
+
+### 🔹 delete_mindspace
+
+Delete an existing mindspace.
+
+```javascript
+await client.delete_mindspace({
+  mindspace_id: 'my_mindspace'
+});
+```
+
+- **mindspace_id**: Identifier of the mindspace to delete.
+
+### 🔹 chat_mindspace
+
+Interact with a mindspace by sending a message.
+
+```javascript
+await client.chat_mindspace({
+  mindspace_id: 'my_mindspace',
+  message: 'Hello, how can you help me?'
+});
+```
+
+- **mindspace_id**: Identifier of the mindspace to chat with.
+- **message**: The message to send to the mindspace.
+
 ## Analytics
 
 ### 🔹 get_operations
