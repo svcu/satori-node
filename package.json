@@ -22,6 +22,9 @@
     "tsup": "^8.1.0",
     "typescript": "^5.4.5"
   },
+   "publishConfig": {
+    "provenance": true
+  },
   "dependencies": {
     "crypto-js": "^4.2.0",
     "cryptojs": "^2.5.3",
