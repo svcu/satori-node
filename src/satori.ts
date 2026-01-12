@@ -57,7 +57,7 @@ export interface GraphCentroidPayload {}
 interface CommandPayload { command: string; [key: string]: any; }
 
 /**
- * Satori Universal WebSocket Client
+ * Satori Universal WebSocket Clientxx
  */
 export class Satori {
   private username: string;
