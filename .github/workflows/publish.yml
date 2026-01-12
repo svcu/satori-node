@@ -1,40 +1,25 @@
-name: Publicar a npm
+name: Publish Package
 
 on:
   push:
-    branches:
-      - main  # Cambia esto si usas otra rama principal (ej: master)
     tags:
-      - 'v*'  # Se activa cuando creas un tag que empiece con 'v' (ej: v1.0.0)
+      - 'v*'
+
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
 
 jobs:
-  build-and-publish:
+  publish:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout del código
-        uses: actions/checkout@v4
-      
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'  # Cambia a la versión que necesites
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
-      
-      - name: Instalar dependencias
-        run: npm ci
-      
-      - name: Ejecutar tests
-        run: npm test
-      
-      - name: Ejecutar linter
-        run: npm run lint
-        continue-on-error: true  # Opcional: continuar aunque falle el linter
-      
-      - name: Build del proyecto
-        run: npm run build
-      
-      - name: Publicar a npm
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
+      - run: npm publish
