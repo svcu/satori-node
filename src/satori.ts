@@ -43,6 +43,7 @@ export interface SplicePayload{ key?: string; array: string; encryption_key?: st
 export interface RemovePayload{ key?: string; array: string; value: any; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; }
 export interface ANNPayload { key: string; top_k?: number; }
 export interface SetMindspacePayload { mindspace_id?: string; config: string; }
+export interface LectureMindspacePayload { mindspace_id: string; corpus: string; }
 export interface DeleteMindspacePayload { mindspace_id: string; }
 export interface ChatMindspacePayload { minspace_id: string; message: string}
 export interface SetMiddlewarePayload{operation: string; middleware: string};
@@ -152,7 +153,7 @@ export class Satori {
   async graphDegreeCentrality(payload: GraphDegreeCentralityPayload = {}) { return this.send({ command: "GRAPH_DEGREE_CENTRALITY", ...payload }); }
   async graphClosenessCentrality(payload: GraphClosenessCentralityPayload = {}) { return this.send({ command: "GRAPH_CLOSENESS_CENTRALITY", ...payload }); }
   async graphCentroid(payload: GraphCentroidPayload = {}) { return this.send({ command: "GRAPH_CENTROID", ...payload }); }
-
+  async lectureMindspace(payload: LectureMindspacePayload) {return this.send({command: "LECTURE_MINDSPACE", ...payload})}
 
   /**
    * Subscriptions
