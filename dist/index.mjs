@@ -258,6 +258,11 @@ var Satori = class {
       return this.send(__spreadValues({ command: "GRAPH_CENTROID" }, payload));
     });
   }
+  lectureMindspace(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "LECTURE_MINDSPACE" }, payload));
+    });
+  }
   /**
    * Subscriptions
    */

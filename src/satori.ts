@@ -35,7 +35,7 @@ export interface EncryptPayload { key: string; encryption_key: string; }
 export interface DecryptPayload { key: string; encryption_key: string; }
 export interface TypeOnlyPayload { type: string; }
 export interface RefPayload { key: string; ref?: string; encryption_key?: string; }
-export interface AskPayload{ question: string; backend?: string }
+export interface AskPayload{ question: string; session?: string; backend?: string }
 export interface QueryPayload{ query: string; backend?: string }
 export interface PushPayload{ key?: string; array: string; value: any; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; }
 export interface PopPayload{ key?: string; array: string; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; }
@@ -169,3 +169,4 @@ export class Satori {
     }));
   }
 }
+
