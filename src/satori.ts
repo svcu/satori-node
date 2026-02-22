@@ -45,7 +45,7 @@ export interface ANNPayload { key: string; top_k?: number; }
 export interface SetMindspacePayload { mindspace_id?: string; config: string; }
 export interface LectureMindspacePayload { mindspace_id: string; corpus: string; }
 export interface DeleteMindspacePayload { mindspace_id: string; }
-export interface ChatMindspacePayload { minspace_id: string; message: string}
+export interface ChatMindspacePayload { mindspace_id: string; message: string}
 export interface SetMiddlewarePayload{operation: string; middleware: string};
 export interface GraphBfsPayload { node: string; }
 export interface GraphDfsPayload { node: string; }
