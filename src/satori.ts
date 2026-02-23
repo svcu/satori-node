@@ -24,7 +24,7 @@ function createWebSocket(url: string): WebSocket {
 // --- Interfaces (same as yours, unchanged) ---
 export interface FieldCondition { field: string; value: string; }
 export interface SetPayload { key?: string; vertices?: string[]; data?: Record<string, any>; type?: string; expires?: boolean; expiration_time?: number; field_array?: FieldCondition[]; one?: boolean; }
-export interface GetPayload { key?: string; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; }
+export interface GetPayload { key?: string; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; max?: number; }
 export interface PutPayload { key?: string; replace_field: string; replace_value: string; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; type?: string; }
 export interface DeletePayload { key?: string; field_array?: FieldCondition[]; one?: boolean; type?: string; }
 export interface SetVertexPayload { key: string; vertex: string | string[]; relation?: string; encryption_key?: string; }
@@ -34,6 +34,9 @@ export interface DfsPayload { node: string; encryption_key?: string; relation?: 
 export interface EncryptPayload { key: string; encryption_key: string; }
 export interface DecryptPayload { key: string; encryption_key: string; }
 export interface TypeOnlyPayload { type: string; }
+export interface MemoryStatsPayload {}
+export interface CpuStatsPayload {}
+export interface InsightsPayload { backend?: string; }
 export interface RefPayload { key: string; ref?: string; encryption_key?: string; }
 export interface AskPayload{ question: string; session?: string; backend?: string }
 export interface QueryPayload{ query: string; backend?: string }
@@ -41,7 +44,7 @@ export interface PushPayload{ key?: string; array: string; value: any; encryptio
 export interface PopPayload{ key?: string; array: string; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; }
 export interface SplicePayload{ key?: string; array: string; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; }
 export interface RemovePayload{ key?: string; array: string; value: any; encryption_key?: string; field_array?: FieldCondition[]; one?: boolean; }
-export interface ANNPayload { key: string; top_k?: number; }
+export interface ANNPayload { vector?: number[]; key?: string; k?: number; ef?: number; use?: string; }
 export interface SetMindspacePayload { mindspace_id?: string; config: string; }
 export interface LectureMindspacePayload { mindspace_id: string; corpus: string; }
 export interface DeleteMindspacePayload { mindspace_id: string; }
@@ -154,6 +157,17 @@ export class Satori {
   async graphClosenessCentrality(payload: GraphClosenessCentralityPayload = {}) { return this.send({ command: "GRAPH_CLOSENESS_CENTRALITY", ...payload }); }
   async graphCentroid(payload: GraphCentroidPayload = {}) { return this.send({ command: "GRAPH_CENTROID", ...payload }); }
   async lectureMindspace(payload: LectureMindspacePayload) {return this.send({command: "LECTURE_MINDSPACE", ...payload})}
+
+
+  /**
+   * Get similar objects using vector search (alias for ANN)
+   */
+  async getSimilar(payload: ANNPayload) { return this.send({ command: "GET_SIMILAR", ...payload }); }
+
+  /**
+   * Create a new mindspace (alias for SET_MINDSPACE)
+   */
+  async createMindspace(payload: SetMindspacePayload) { return this.send({ command: "CREATE_MINDSPACE", ...payload }); }
 
   /**
    * Subscriptions

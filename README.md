@@ -287,15 +287,39 @@ await client.set_middleware({
 
 ### 🔹 ann
 
-Perform an Aproximate Nearest Neighbors search
+Perform an Approximate Nearest Neighbors search
 
 ```javascript
-await client.ann({'key' : 'user:123', 'top_k' : '5'});
+// By key
+await client.ann({ key: 'user:123', k: 5 });
+
+// By vector
+await client.ann({ vector: [0.1, 0.2, 0.3, ...], k: 5, ef: 25 });
 ```
 
-- **key**: Source object key.
-- **vector**: Vector of f32 instead of key
-- **top_k**: Number of nearest neighbors to return
+- **key**: Source object key (use embedding from this object)
+- **vector**: Query vector as array of floats (alternative to key)
+- **k**: Number of nearest neighbors to return (default: 5)
+- **ef**: Search width parameter (default: 25)
+- **use**: For key-based search, use "data" or "embedding" (default: "embedding")
+
+### 🔹 getSimilar
+
+Perform approximate nearest neighbor search (alias for ANN with full vector support)
+
+```javascript
+// By key
+await client.getSimilar({ key: 'user:123', k: 10 });
+
+// By vector
+await client.getSimilar({ vector: [0.1, 0.2, 0.3, ...], k: 10 });
+```
+
+- **key**: Source object key (use embedding from this object)
+- **vector**: Query vector as array of floats (alternative to key)
+- **k**: Number of nearest neighbors to return (default: 5)
+- **ef**: Search width parameter (default: 25)
+- **use**: For key-based search, use "data" or "embedding" (default: "embedding")
 
 ### 🔹 query
 
@@ -319,6 +343,19 @@ await client.ask({'question' : 'How many user over 25 years old do we have. Just
 - **question**: Your question in natural language.
 - **ref**: The LLM backend. Must be `openai:model-name` or `ollama:model-name`, if not specified `openai:gpt-4o-mini` will be used as default. If you're using OpenAI as your backend you must specify the `OPENAI_API_KEY` env variable.
 
+## System Analytics
+
+### 🔹 get_operations
+
+Returns all operations executed on the database.
+
+### 🔹 get_access_frequency
+
+Returns the number of times an object has been queried or accessed.
+```javascript
+await client.get_access_frequency({'key' : 'jhon'})
+```
+
 ### 🔹 set_mindspace
 
 Create or update a mindspace with a specific configuration.
@@ -331,6 +368,20 @@ await client.set_mindspace({
 ```
 
 - **mindspace_id** (optional): Identifier for the mindspace. If not provided, a default will be used.
+- **config**: Configuration string defining the mindspace behavior.
+
+### 🔹 create_mindspace
+
+Create a new mindspace (alias for SET_MINDSPACE).
+
+```javascript
+await client.create_mindspace({
+  mindspace_id: 'my_mindspace',
+  config: 'Configuration string for the mindspace'
+});
+```
+
+- **mindspace_id** (optional): Identifier for the mindspace. If not provided, a UUID will be generated.
 - **config**: Configuration string defining the mindspace behavior.
 
 ### 🔹 delete_mindspace
@@ -359,18 +410,19 @@ await client.chat_mindspace({
 - **mindspace_id**: Identifier of the mindspace to chat with.
 - **message**: The message to send to the mindspace.
 
-## Analytics
+### 🔹 lecture_mindspace
 
-### 🔹 get_operations
+Import text corpus into a mindspace for semantic search and context retrieval.
 
-Returns all operations executed on the database.
-
-### 🔹 get_access_frequency
-
-Returns the number of times an object has been queried or accessed.
 ```javascript
-await client.get_access_frequency({'key' : 'jhon'})
+await client.lecture_mindspace({
+  mindspace_id: 'my_mindspace',
+  corpus: 'User John Doe is a software engineer who specializes in Rust and distributed systems...'
+});
 ```
+
+- **mindspace_id**: Mindspace ID to import into
+- **corpus**: Text content to import
 
 
 ## Responses

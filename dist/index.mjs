@@ -264,6 +264,46 @@ var Satori = class {
     });
   }
   /**
+   * Get memory statistics
+   */
+  memoryStats() {
+    return __async(this, arguments, function* (payload = {}) {
+      return this.send(__spreadValues({ command: "MEMORY_STATS" }, payload));
+    });
+  }
+  /**
+   * Get CPU statistics
+   */
+  cpuStats() {
+    return __async(this, arguments, function* (payload = {}) {
+      return this.send(__spreadValues({ command: "CPU_STATS" }, payload));
+    });
+  }
+  /**
+   * Generate AI insights
+   */
+  insights(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "INSIGHTS" }, payload));
+    });
+  }
+  /**
+   * Get similar objects using vector search (alias for ANN)
+   */
+  getSimilar(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "GET_SIMILAR" }, payload));
+    });
+  }
+  /**
+   * Create a new mindspace (alias for SET_MINDSPACE)
+   */
+  createMindspace(payload) {
+    return __async(this, null, function* () {
+      return this.send(__spreadValues({ command: "CREATE_MINDSPACE" }, payload));
+    });
+  }
+  /**
    * Subscriptions
    */
   notify(key, callback) {
